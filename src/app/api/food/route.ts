@@ -24,23 +24,22 @@ export async function POST(req: Request) {
   const userID = token.value;
   console.log(userID);
 
-  if (!token) {
-    return new Response(JSON.stringify({ error: "Authentication required" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+// Authentication required error
+if (!token) {
+  return new Response(JSON.stringify({ error: "Authentication required" }), {
+    status: 401,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
+  // Bad request error for missing data
   if (!name || !mealName || !mealType) {
-    return (
-      new Response(),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return new Response(JSON.stringify({ error: "Bad Request - Missing fields" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   try {
@@ -117,15 +116,18 @@ export async function POST(req: Request) {
     const insertionResult = await collection.insertOne(foodData);
 
     if (insertionResult.acknowledged) {
-      return new Response(
-        JSON.stringify({
-          message: "Food logged successfully",
-          data: foodData,
-          foodId: insertionResult.insertedId,
-        }),
-      );
+      return new Response(JSON.stringify({
+        message: "Food logged successfully",
+        data: foodData,
+        foodId: insertionResult.insertedId,
+      }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
     } else {
-      throw new Error("Failed to insert exercise");
+      throw new Error("Failed to insert food data");
     }
   } catch (error: any) {
     console.error(error);
