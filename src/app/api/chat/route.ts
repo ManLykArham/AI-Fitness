@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
 import { Chat } from "openai/resources/index.mjs";
 import { threadId } from "worker_threads";
-export const maxDuration = 200;
+//export const maxDuration = 200;
 
 const openaiassistant = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
