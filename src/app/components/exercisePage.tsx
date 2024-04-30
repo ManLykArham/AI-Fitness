@@ -4,11 +4,11 @@ import TooltipMessage from "./TooltipMessage";
 import NotFoundMessage from "./NotFoundMessage";
 import { timeStamp } from "console";
 import { date } from "zod";
-import { connectToDatabase } from '@/app/lib/dbConnection';
-import { ObjectId } from 'mongodb'; // Ensure you import ObjectId
+import { connectToDatabase } from "@/app/lib/dbConnection";
+import { ObjectId } from "mongodb"; // Ensure you import ObjectId
 
 interface Exercise {
-  id: number;
+  id: string;
   date: string;
   timestamp: string;
   exerciseName: string;
@@ -82,11 +82,12 @@ function ExercisePage() {
 
         // Extract the name before the comma
         const exerciseName = data.data[0].name.split(",")[0].trim();
-        console.log(exerciseName);
+        const exerciseID = data.exerciseId;
+        console.log("Data: " + exerciseID);
 
         //Assuming the API returns the exercise data including a generated ID and possibly other info
         const newExercise = {
-          id: exercises.length + 1,
+          id: exerciseID,
           timestamp: formattedTime,
           date: formattedDate,
           exerciseName: exerciseInput,
@@ -110,84 +111,74 @@ function ExercisePage() {
 
   useEffect(() => {
     const fetchExercises = async () => {
-        try {
-            const response = await fetch('/api/getExercises', {
-                method: 'GET',
-                credentials: 'include' // to ensure cookies are sent
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch exercises');
-            }
-            const data = await response.json();
-            console.log("AWAITED response.json():" + data);
-            if (Array.isArray(data)) {
-              setExercises(data.map((item) => ({
-                  id: item._id,
-                  date: new Date(item.timestamp).toISOString().split('T')[0],
-                  timestamp: new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                  exerciseName: item.activity,
-                  name: item.activity,
-                  duration: item.duration,
-                  calories: item.caloriesBurned
-              })));
-          } else {
-              console.error('Received data is not an array:', data);
-          }
-        } catch (error: any) {
-            console.error('Error fetching exercises:', error);
-            setErrorMessage(error.message);
+      try {
+        const response = await fetch("/api/getExercises", {
+          method: "GET",
+          credentials: "include", // to ensure cookies are sent
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch exercises");
         }
+        const data = await response.json();
+        console.log("AWAITED response.json():" + data);
+        if (Array.isArray(data)) {
+          setExercises(data
+            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            .map((item) => ({
+              id: item._id,
+              date: new Date(item.timestamp).toISOString().split("T")[0],
+              timestamp: new Date(item.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              exerciseName: item.activity,
+              name: item.activity,
+              duration: item.duration,
+              calories: item.caloriesBurned,
+            })),
+          );
+        } else {
+          console.error("Received data is not an array:", data);
+        }
+      } catch (error: any) {
+        console.error("Error fetching exercises:", error);
+        setErrorMessage(error.message);
+      }
     };
 
     fetchExercises();
-}, []);
+  }, []);
 
   // Function to handle deleting an exercise
   // const deleteExercise = (id: number) => {
   //   setExercises(exercises.filter((exercise) => exercise.id !== id));
   // };
 
-//   const deleteExercise = async (id: any) => {
-//     try {
-//         const response = await fetch(`/api/deleteExercise?id=${id}`, { // Assuming your API route is set up to receive the ID via query parameters
-//             method: 'DELETE'
-//         });
-//         const data = await response.json();
-
-//         if (response.ok) {
-//             setExercises(exercises.filter(exercise => exercise.id !== id));
-//         } else {
-//             throw new Error(data.error || 'Failed to delete the exercise');
-//         }
-//     } catch (error: any) {
-//         console.error('Delete exercise error:', error);
-//         setErrorMessage(error.message || 'Failed to delete exercise');
-//     }
-// };
-
-const deleteExercise = async (id: any) => {
-  try {
-    const response = await fetch("/api/deleteExercise", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    });
+  const deleteExercise = async (id: any) => {
+    try {
+      console.log(id);
+      const response = await fetch("/api/deleteExercise", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
       const data = await response.json();
 
       if (response.ok) {
-          setExercises(exercises.filter((exercise) => exercise.id !== id));
+        setExercises((prevExercises) =>
+          prevExercises.filter((exercise) => exercise.id !== id),
+        );
       } else {
-          throw new Error(data.error || 'Failed to delete the exercise');
+        throw new Error(data.error || "Failed to delete the exercise");
       }
-  } catch (error: any) {
-      console.error('Delete exercise error:', error);
-      setErrorMessage(error.message || 'Failed to delete exercise');
-  }
-};
-
+    } catch (error: any) {
+      console.error("Delete exercise error:", error);
+      setErrorMessage(error.message || "Failed to delete exercise");
+    }
+  };
 
   // Toggle tooltip visibility
   const toggleTooltip = () => {
@@ -195,7 +186,7 @@ const deleteExercise = async (id: any) => {
   };
 
   return (
-    <main className="w-full h-screen bg-blue-200">
+    <main className="w-full min-h-screen bg-blue-200">
       <div className="p-4 ">
         <div className="mp-4 p-4 sm:ml-64 border-2 border-gray-700 border-dashed rounded-lg">
           <div className="p-4 border border-white border rounded-lg dark:border-white">
@@ -269,44 +260,48 @@ const deleteExercise = async (id: any) => {
               onChange={(e) => setDateFilter(e.target.value)} // Directly set the ISO format date
               className="m-3 px-4 py-2 border rounded-md bg-white border-gray-900"
             />
-            {exercises.filter(
-              (entry) =>
-                entry.name
-                  .toLowerCase()
-                  .includes(exerciseNameFilter.toLowerCase()) &&
-                entry.date === dateFilter,
-            ).length === 0 ? (
-              <NotFoundMessage itemType="exercises" />
-            ) : (
-              exercises
-                .filter(
-                  (entry) =>
-                    entry.name
-                      .toLowerCase()
-                      .includes(exerciseNameFilter.toLowerCase()) &&
-                    entry.date === dateFilter,
-                )
-                .map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="p-2 mt-2 bg-blue-100 border border-gray-900 rounded-lg"
-                  >
-                    <h3 className="font-bold">{`Exercise logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}</h3>
-                    <div className="bg-blue-100 p-2 mt-2 border border-white rounded-lg">
-                      <h4 className="mt-2 ml-2 font-semibold">{entry.name}</h4>
-                      <p className="mt-2 ml-2">{entry.duration} mins</p>
-                      <p className="mt-2 ml-2">{entry.calories} kcal</p>
+            <div className="mt-4 p-4 w-full h-full border border-white rounded-lg dark:border-white">
+              {exercises.filter(
+                (entry) =>
+                  entry.name
+                    .toLowerCase()
+                    .includes(exerciseNameFilter.toLowerCase()) &&
+                  entry.date === dateFilter,
+              ).length === 0 ? (
+                <NotFoundMessage itemType="exercises" />
+              ) : (
+                exercises
+                  .filter(
+                    (entry) =>
+                      entry.name
+                        .toLowerCase()
+                        .includes(exerciseNameFilter.toLowerCase()) &&
+                      entry.date === dateFilter,
+                  )
+                  .map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="p-2 mt-2 bg-blue-100 border border-gray-900 rounded-lg"
+                    >
+                      <h3 className="font-bold">{`Exercise logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}</h3>
+                      <div className="bg-blue-100 p-2 mt-2 border border-white rounded-lg">
+                        <h4 className="mt-2 ml-2 font-semibold">
+                          {entry.name}
+                        </h4>
+                        <p className="mt-2 ml-2">{entry.duration} mins</p>
+                        <p className="mt-2 ml-2">{entry.calories} kcal</p>
 
-                      <button
-                        onClick={() => deleteExercise(entry.id)}
-                        className="mt-3 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
+                        <button
+                          onClick={() => deleteExercise(entry.id)}
+                          className="mt-3 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
-            )}
+                  ))
+              )}
+            </div>
           </div>
         </div>
       </div>

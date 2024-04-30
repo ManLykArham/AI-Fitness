@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   console.log("[id]: " + id);
 
   if (!id) {
-    return new Response(JSON.stringify({ error: "Missing exercise ID" }), {
+    return new Response(JSON.stringify({ error: "Missing meal ID" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -22,21 +22,21 @@ export async function POST(request: Request) {
   try {
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const collection = db.collection("meals");
 
     // Delete the exercise using the parsed ID
     const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 1) {
       return new Response(
-        JSON.stringify({ message: "Exercise deleted successfully" }),
+        JSON.stringify({ message: "Meals deleted successfully" }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
         },
       );
     } else {
-      return new Response(JSON.stringify({ error: "Exercise not found" }), {
+      return new Response(JSON.stringify({ error: "Meals not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });

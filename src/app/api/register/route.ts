@@ -48,11 +48,11 @@ export async function POST(request: Request) {
     });
 
     cookies().set({
-      name: 'userID',
+      name: "userID",
       value: userId,
       httpOnly: true,
-      path: '/',
-    })
+      path: "/",
+    });
 
     // Serialize the token into a cookie
     // const cookie = serialize("token", token, {

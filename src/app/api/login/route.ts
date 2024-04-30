@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 import { Db } from "mongodb";
-import { cookies } from 'next/headers'
+import { cookies } from "next/headers";
 
 //Reuse the MongoDB connection setup
 // let dbClient: any = null;
@@ -19,15 +19,12 @@ import { cookies } from 'next/headers'
 // }
 
 export async function POST(request: Request) {
-  if (request.method !== 'POST') {
-    return new Response(
-        JSON.stringify({ error: "Method Not Allowed" }),
-        {
-          status: 405,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
+  if (request.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   try {
     const data = await request.json();
     if (!data.email || !data.password) {
@@ -65,11 +62,11 @@ export async function POST(request: Request) {
     });
 
     cookies().set({
-      name: 'userID',
+      name: "userID",
       value: userId,
       httpOnly: true,
-      path: '/',
-    })
+      path: "/",
+    });
 
     // const cookie = serialize("token", token, {
     //   httpOnly: true,

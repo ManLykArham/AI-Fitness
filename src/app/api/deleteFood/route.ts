@@ -22,21 +22,21 @@ export async function POST(request: Request) {
   try {
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const collection = db.collection("foods");
 
     // Delete the exercise using the parsed ID
     const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 1) {
       return new Response(
-        JSON.stringify({ message: "Exercise deleted successfully" }),
+        JSON.stringify({ message: "Food deleted successfully" }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
         },
       );
     } else {
-      return new Response(JSON.stringify({ error: "Exercise not found" }), {
+      return new Response(JSON.stringify({ error: "Food not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });

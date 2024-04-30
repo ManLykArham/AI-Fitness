@@ -1,25 +1,69 @@
 import OpenAI from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
+import { Chat } from "openai/resources/index.mjs";
+import { threadId } from "worker_threads";
+export const maxDuration = 200;
 
-// Create an OpenAI API client (that's edge friendly!)
-const openai = new OpenAI({
+const openaiassistant = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const dynamic = "force-dynamic";
+export async function POST(request: Request) {
+  const { userChatbotMessage } = await request.json();
 
-export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const OpenAIAssistantID = process.env.OPENAI_ASSISTANT_ID!;
 
-  // Ask OpenAI for a streaming chat completion given the prompt
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    stream: true,
-    messages,
-  });
+  try {
+    let assistantRunStatus = "pending";
 
-  // Convert the response into a friendly text-stream
-  const stream = OpenAIStream(response);
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+    const ChatAssistant =
+      await openaiassistant.beta.assistants.retrieve(OpenAIAssistantID);
+
+    const assistantThread = await openaiassistant.beta.threads.create();
+    await openaiassistant.beta.threads.messages.create(assistantThread.id, {
+      role: "user",
+      content: userChatbotMessage,
+    });
+
+    const sendMessageRun = await openaiassistant.beta.threads.runs.create(
+      assistantThread.id,
+      {
+        assistant_id: ChatAssistant.id,
+        // instructions: "",
+      },
+    );
+
+    while (assistantRunStatus !== "completed") {
+      const loopRun = await openaiassistant.beta.threads.runs.retrieve(
+        assistantThread.id,
+        sendMessageRun.id,
+      );
+      assistantRunStatus = loopRun.status;
+      console.log("The run status is currently:" + assistantRunStatus);
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    const assistantMessages = await openaiassistant.beta.threads.messages.list(
+      assistantThread.id,
+    );
+
+    const assistantMessage = (await assistantMessages.data[0]
+      .content[0]) as TextContentBlock;
+    const chatbotResponse = assistantMessage.text.value;
+
+    return new Response(JSON.stringify({ chatbotResponse: chatbotResponse }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }

@@ -13,7 +13,8 @@ export async function POST(req: Request) {
     });
   }
   const token: any = cookies().get("userID");
-  const { activity, duration } = await req.json();
+  const { mealData } = await req.json();
+
   //const cookies = parseCookies(req as Request);
   //const token = cookies.token;
   console.log(token);
@@ -40,60 +41,31 @@ export async function POST(req: Request) {
   //   });
   // }
 
-  if (!activity || !duration) {
-    return new Response(
-      JSON.stringify({ error: "Activity and duration are required" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-  }
-
   try {
-    const apiResponse = await fetch(
-      `https://api.api-ninjas.com/v1/caloriesburned?activity=${activity}&duration=${duration}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Api-Key": process.env.APININJA_API_KEY!,
-        },
-      },
-    );
-
-    if (!apiResponse.ok) {
-      throw new Error(`API responded with status ${apiResponse.status}`);
-    }
-
-    const data = await apiResponse.json();
-
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const collection = db.collection("meals");
 
-    const exerciseDoc = {
+    const mealDoc = {
       userID,
-      activity,
-      duration,
-      caloriesBurned: data[0].total_calories,
+      ...mealData,
       timestamp: new Date(),
     };
 
-    const insertionResult = await collection.insertOne(exerciseDoc);
+    const insertionResult = await collection.insertOne(mealDoc);
 
     // const exerciseID = await collection.find({ userID }).toArray();
 
     if (insertionResult.acknowledged) {
       return new Response(
         JSON.stringify({
-          message: "Exercise logged successfully",
-          data: data,
-          exerciseId: insertionResult.insertedId,
+          message: "Meal logged successfully",
+          data: mealData,
+          mealId: insertionResult.insertedId,
         }),
       );
     } else {
-      throw new Error("Failed to insert exercise");
+      throw new Error("Failed to insert meal");
     }
   } catch (error: any) {
     console.error(error);

@@ -27,22 +27,31 @@ export async function GET(request: Request) {
 
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const collection = db.collection("meals");
 
-    const exercises = await collection.find({ userID }).toArray();
+    const meals = await collection.find({ userID }).toArray();
 
-    const formattedExercises = exercises.map((exercise) => ({
-      _id: exercise._id.toString(), // Convert ObjectId to string
-      userID: exercise.userID, // Usually already a string, ensure this if necessary
-      activity: exercise.activity,
-      duration: exercise.duration,
-      caloriesBurned: exercise.caloriesBurned,
-      timestamp: exercise.timestamp.toISOString(), // Convert Date to ISO string
+    const formattedMeals = meals.map((meal) => ({
+      id: meal._id.toString(), // Convert ObjectId to string
+      name: meal.name,
+      calories: meal.calories,
+      servingSizeG: meal.servingSizeG,
+      fatTotalG: meal.fatTotalG,
+      fatSaturatedG: meal.fatSaturatedG,
+      proteinG: meal.proteinG,
+      sodiumMg: meal.sodiumMg,
+      potassiumMg: meal.potassiumMg,
+      cholesterolMg: meal.cholesterolMg,
+      carbohydratesTotalG: meal.carbohydratesTotalG,
+      fiberG: meal.fiberG,
+      sugarG: meal.sugarG,
+      date: meal.date,
+      showDetails: false,
     }));
 
-    console.log("Formatted: " + formattedExercises);
+    console.log("Formatted: " + formattedMeals);
 
-    return new Response(JSON.stringify(formattedExercises), {
+    return new Response(JSON.stringify(formattedMeals), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
