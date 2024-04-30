@@ -28,7 +28,7 @@ const TnCModal: React.FC<TnCModalProps> = ({ isOpen, onClose }) => {
           he felt particularly daring and decided not just to defy the limits
           but to demolish them. He grabbed not one, but four large cans of
           Monster Energy, the ones with the ominous warning labels that screamed
-          'Unleash the Beast.' As he gulped down the first can, a rush of
+          Unleash the Beast. As he gulped down the first can, a rush of
           electric energy surged through his veins. By the second, his heart was
           pounding like a drum at a punk rock concert. The third can made the
           world around him buzz and hum in a symphony of hyperactivity. But it
