@@ -1,6 +1,5 @@
 // /api/exercise/route.ts
 import { connectToDatabase } from "@/app/lib/dbConnection";
-import { parseCookies } from "@/app/utils/parseCookies";
 import jwt from "jsonwebtoken";
 import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
