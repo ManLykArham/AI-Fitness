@@ -1,33 +1,106 @@
-"use client";
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 
-import { useChat } from "ai/react";
+// Define interfaces for types
+interface IMessage {
+  id: string;
+  role: 'user' | 'ai';
+  content: string;
+}
 
+interface IChatHook {
+  messages: IMessage[];
+  input: string;
+  handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (userInput: string, chatbotResponse: string) => void;
+}
+
+// Define the custom hook
+function useChat(): IChatHook {
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [input, setInput] = useState<string>('');
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setInput(event.target.value);
+  };
+
+  const handleSubmit = (userInput: string, chatbotResponse: string): void => {
+    setMessages(prevMessages => [
+      ...prevMessages,
+      { id: `msg_${prevMessages.length}`, role: 'user', content: userInput }
+    ]);
+    // Example response handling
+    setTimeout(() => {
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { id: `msg_${prevMessages.length}`, role: 'ai', content: chatbotResponse || "Response from AI" }
+      ]);
+      setInput("");
+    }, 500);
+  };
+
+  return { messages, input, handleInputChange, handleSubmit };
+}
+
+// Define the component using the hook
 function ChatBotPage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [typing, setTyping] = useState<string>('');
+
+  const handleSubmitForm = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    setLoading(true);
+    setTyping("AI Fitness Coach is typing...");
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userChatbotMessage: input }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        handleSubmit(input, data.chatbotResponse);
+        // setInput(""); // Ensure this call is within the scope that defines setInput
+        //call the handleInputChange function to make setInput = to " "(nothing)
+      } else {
+        console.error('Failed to send message:', data.error);
+      }
+    } catch (error: any) {
+      console.error('Network or other error:', error.message);
+    }
+
+    setLoading(false);
+    setTyping(""); // Clear the typing status
+  };
+
   return (
-    <main className="flex items-center justify-center w-full min-h-screen bg-gradient-to-br from-gray-500 to-white">
-      <div className="w-1/2 p-4 bg-gray-900 rounded-lg shadow-lg">
-        <div className="flex flex-col h-[80vh] justify-between">
+    <main className="w-full min-h-screen bg-blue-200 p-4">
+      <div className="max-w-4xl mx-auto sm:ml-64">
+        <div className="bg-white border rounded-lg flex flex-col h-[95vh] justify-between">
           <div className="overflow-y-auto p-4 space-y-2">
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`p-2 rounded ${m.role === "user" ? "bg-gray-700 text-white" : "bg-gray-600 text-gray-300"}`}
+                className={`p-2 rounded ${m.role === "user" ? "bg-blue-400 text-white" : "bg-blue-700 text-blue-200"}`}
               >
-                <span className="font-bold">
-                  {m.role === "user" ? "You: " : "AI: "}
-                </span>
+                <span className="font-bold">{m.role === "user" ? "You: " : "AI: "}</span>
                 {m.content}
               </div>
             ))}
+             {typing && <div className="bg-sky-100 rounded p-2 text-blue-700">{typing}</div>}
           </div>
-          <form onSubmit={handleSubmit} className="mt-4">
+          <form onSubmit={handleSubmitForm} className="mt-4">
             <input
-              className="w-full p-2 text-white bg-gray-800 border border-gray-600 rounded focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="w-full p-2 text-white bg-blue-900 border border-blue-600 rounded focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
               value={input}
-              placeholder="Say something..."
+              placeholder="Ask about nutrition or exercise..."
               onChange={handleInputChange}
               autoComplete="off"
+              disabled={loading}
             />
           </form>
         </div>
