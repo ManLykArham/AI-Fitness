@@ -239,7 +239,7 @@ const DashboardPage = () => {
                         Going below these numbers will put you at risk of
                         developing eating disorders or injuries.
                         <p className="font-bold">
-                          Just a reminder: Don't focus on the numbers, focus on
+                          Just a reminder: Don&apos;t focus on the numbers, focus on
                           being well overall :)
                         </p>
                       </p>

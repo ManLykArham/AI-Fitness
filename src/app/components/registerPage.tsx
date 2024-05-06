@@ -187,7 +187,7 @@ function RegisterPage() {
             Our app integrates third-party databases to provide nutritional and other health-related information. While we strive to provide accurate data, the information may not always be completely accurate or up to date. Users should verify any critical information independently.
           </p>
           <p><strong>4. AI Chatbot</strong><br/>
-            AI Fitness includes an AI chatbot designed to offer fitness and health coaching. This AI is not a substitute for professional advice from a qualified healthcare provider. It's important to consult with a professional for all health-related concerns.
+            AI Fitness includes an AI chatbot designed to offer fitness and health coaching. This AI is not a substitute for professional advice from a qualified healthcare provider. It&apos;s important to consult with a professional for all health-related concerns.
           </p>
           <p><strong>5. Personal Data and Privacy</strong><br/>
             Your privacy is important to us. We use your data to train our AI systems to provide personalized responses and improve service effectiveness.
@@ -201,7 +201,7 @@ function RegisterPage() {
             You are prohibited from:<br/>
             - Using the app for any unlawful purpose.<br/>
             - Engaging in any activity that may interfere with or disrupt the service.<br/>
-            - Reproducing, duplicating, copying, selling, or reselling any part of the app's services without express permission.
+            - Reproducing, duplicating, copying, selling, or reselling any part of the app&apos;s services without express permission.
           </p>
         </div>
         <button

@@ -718,7 +718,7 @@ function FoodPage() {
                      
                      <div className="mt-2 px-7 py-3">
                        <p className="text-sm text-gray-500">
-                       <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don't hesitate to track it by clicking the Track button.</p>
+                       <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don&apos;t hesitate to track it by clicking the Track button.</p>
                        </p>
                      </div>
                      <div className="items-center px-4 py-3">
