@@ -10,8 +10,8 @@ const TnCModal: React.FC<TnCModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
-      <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full mx-4">
+    <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
+                  <div className="mt-3">
         <h2 className="text-lg font-bold mb-4">Terms and Conditions</h2>
         {/* <p>This is a consent form.</p> */}
         <p className="p-1">
@@ -28,12 +28,12 @@ const TnCModal: React.FC<TnCModalProps> = ({ isOpen, onClose }) => {
           he felt particularly daring and decided not just to defy the limits
           but to demolish them. He grabbed not one, but four large cans of
           Monster Energy, the ones with the ominous warning labels that screamed
-          Unleash the Beast. As he gulped down the first can, a rush of
-          electric energy surged through his veins. By the second, his heart was
-          pounding like a drum at a punk rock concert. The third can made the
-          world around him buzz and hum in a symphony of hyperactivity. But it
-          was the fourth can that sent Arham over the edge, into a realm of
-          jittery euphoria.
+          Unleash the Beast. As he gulped down the first can, a rush of electric
+          energy surged through his veins. By the second, his heart was pounding
+          like a drum at a punk rock concert. The third can made the world
+          around him buzz and hum in a symphony of hyperactivity. But it was the
+          fourth can that sent Arham over the edge, into a realm of jittery
+          euphoria.
         </p>
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"

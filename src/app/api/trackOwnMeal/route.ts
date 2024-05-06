@@ -1,6 +1,7 @@
 // /api/exercise/route.ts
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import jwt from "jsonwebtoken";
+import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -11,7 +12,8 @@ export async function POST(req: Request) {
     });
   }
   const token: any = cookies().get("userID");
-  const { activity, duration } = await req.json();
+  const { mealData } = await req.json();
+
   //const cookies = parseCookies(req as Request);
   //const token = cookies.token;
   console.log(token);
@@ -38,61 +40,34 @@ export async function POST(req: Request) {
   //   });
   // }
 
-  if (!activity || !duration) {
-    return new Response(
-      JSON.stringify({ error: "Activity and duration are required" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-  }
-
   try {
-    const apiResponse = await fetch(
-      `https://api.api-ninjas.com/v1/caloriesburned?activity=${activity}&duration=${duration}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Api-Key": process.env.APININJA_API_KEY!,
-        },
-      },
-    );
-
-    if (!apiResponse.ok) {
-      throw new Error(`API responded with status ${apiResponse.status}`);
-    }
-
-    const data = await apiResponse.json();
-
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const collection = db.collection("foods");
+    
+  console.log("MealData: " + mealData);
 
-    const exerciseDoc = {
+    const mealDoc = {
       userID,
-      activity,
-      duration,
-      caloriesBurned: data[0].total_calories,
+      ...mealData,
       timestamp: new Date(),
-      date: new Date().toISOString(),
+      date: new Date().toISOString()
     };
 
-    const insertionResult = await collection.insertOne(exerciseDoc);
+    const insertionResult = await collection.insertOne(mealDoc);
 
     // const exerciseID = await collection.find({ userID }).toArray();
 
     if (insertionResult.acknowledged) {
       return new Response(
         JSON.stringify({
-          message: "Exercise logged successfully",
-          data: data,
-          exerciseId: insertionResult.insertedId,
+          message: "Meal logged successfully",
+          data: mealDoc,
+          mealId: insertionResult.insertedId,
         }),
       );
     } else {
-      throw new Error("Failed to insert exercise");
+      throw new Error("Failed to insert meal");
     }
   } catch (error: any) {
     console.error(error);

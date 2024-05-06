@@ -10,7 +10,15 @@ export async function POST(request: Request) {
   try {
     console.log("Inside POST request in regitser/route.ts file");
     const data = await request.json();
-    if (!data.email || !data.password || !data.name || !data.surname) {
+    if (
+      !data.email ||
+      !data.password ||
+      !data.name ||
+      !data.surname ||
+      !data.weight ||
+      !data.height ||
+      !data.goal
+    ) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -38,31 +46,28 @@ export async function POST(request: Request) {
       surname: data.surname,
       email: data.email,
       password: hashedPassword,
+      weight: data.weight,
+      height: data.height,
+      goal: data.goal,
+      calorieGoal: 0,
     };
     const result = await db.collection("users").insertOne(newUser);
     const userId = result.insertedId.toString();
 
-    // Optionally, create a JWT token
-    const token = jwt.sign({ userId: userId }, process.env.JWT_SECRET!, {
-      expiresIn: "2h",
-    });
-
-    cookies().set({
-      name: "userID",
-      value: userId,
-      httpOnly: true,
-      path: "/",
-    });
-
-    // Serialize the token into a cookie
-    // const cookie = serialize("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV !== "development",
-    //   sameSite: "strict",
-    //   path: "/",
-    //   maxAge: 7200, // 2 hours
-    // });
-
+     // Generate a JWT
+     const secretKey = 'gqR8!f5#Pz'; // This should be stored securely and accessed via environment variables
+     const token = jwt.sign({ userId }, secretKey, { expiresIn: '2h' });
+ 
+     // Set the JWT in a httpOnly cookie
+     cookies().set({
+       name: "authToken",
+       value: token,
+       httpOnly: true,
+       path: "/",
+       secure: true, // set to true in production
+       sameSite: 'strict',
+     });
+ 
     // Send the response with the token and user ID
     return new Response(
       JSON.stringify({ message: "Signup successful", userId }),

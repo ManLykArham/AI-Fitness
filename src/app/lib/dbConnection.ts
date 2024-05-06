@@ -6,8 +6,8 @@ const client = new MongoClient(process.env.DATABASE_URI!, {
     strict: true,
     deprecationErrors: true,
   },
-  connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000,
+  connectTimeoutMS: 8000,
+  socketTimeoutMS: 9000,
 });
 
 // Track the database connection status

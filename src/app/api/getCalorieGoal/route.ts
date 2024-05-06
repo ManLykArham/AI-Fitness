@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
-export const dynamic = "force-dynamic";
+import { ObjectId } from "mongodb";
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   if (request.method !== "GET") {
@@ -11,8 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    // const cookies = request.cookies;
-    // const userID = cookies.userID; // Assuming the cookie contains the userID directly
+    // Extracting the user ID from the cookies
     const cookie: any = cookies().get("userID");
     const userID = cookie.value;
 
@@ -28,27 +28,25 @@ export async function GET(request: Request) {
 
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("exercises");
+    const user = await db
+      .collection("users")
+      .findOne({ _id: new ObjectId(userID) });
 
-    const exercises = await collection.find({ userID }).toArray();
+    if (!user) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    const formattedExercises = exercises.map((exercise) => ({
-      _id: exercise._id.toString(), // Convert ObjectId to string
-      userID: exercise.userID, // Usually already a string, ensure this if necessary
-      activity: exercise.activity,
-      duration: exercise.duration,
-      caloriesBurned: exercise.caloriesBurned,
-      timestamp: exercise.timestamp.toISOString(), // Convert Date to ISO string
-    }));
-
-    console.log("Formatted: " + formattedExercises);
-
-    return new Response(JSON.stringify(formattedExercises), {
+    const calorieGoal = user.calorieGoal || 0; // Return 0 if not set
+    console.log("got calorie goals");
+    return new Response(JSON.stringify({ calorieGoal }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    console.error("Failed to retrieve exercises", error);
+    console.error("Failed to retrieve calorie goal", error);
     return new Response(JSON.stringify({ error: "Failed to retrieve data" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

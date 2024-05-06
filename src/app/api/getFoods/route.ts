@@ -1,7 +1,6 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
-export const dynamic = 'force-dynamic';
-
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   if (request.method !== "GET") {
@@ -53,7 +52,6 @@ export async function GET(request: Request) {
       fiber_g: food.fiber,
       sugar_g: food.sugar,
     }));
-    
 
     console.log("Formatted: " + formattedFoods);
 

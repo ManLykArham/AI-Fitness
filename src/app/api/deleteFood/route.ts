@@ -8,12 +8,30 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } // Parse the ID from the request body
-  const data = await request.json();
-  const id: any = data.id;
+  // Attempt to parse the request body and handle parsing errors
+  let data;
+  try {
+    data = await request.json();
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { id } = data;
   console.log("[id]: " + id);
 
+  // Validate the presence and format of the ID
   if (!id) {
-    return new Response(JSON.stringify({ error: "Missing exercise ID" }), {
+    return new Response(JSON.stringify({ error: "Missing food ID" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  if (!ObjectId.isValid(id)) {
+    return new Response(JSON.stringify({ error: "Invalid food ID" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });

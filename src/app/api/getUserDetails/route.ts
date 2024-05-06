@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
+import { ObjectId } from "mongodb";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
@@ -28,32 +29,29 @@ export async function GET(request: Request) {
 
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
-    const collection = db.collection("meals");
+    const collection = db.collection("users");
 
-    const meals = await collection.find({ userID }).toArray();
+    const userDetails = await collection.findOne({ _id: new ObjectId(userID) });
+    if (!userDetails) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
 
-    const formattedMeals = meals.map((meal) => ({
-      id: meal._id.toString(), // Convert ObjectId to string
-      mealType: meal.mealType,
-      name: meal.name,
-      calories: meal.calories,
-      servingSizeG: meal.servingSizeG,
-      fatTotalG: meal.fatTotalG,
-      fatSaturatedG: meal.fatSaturatedG,
-      proteinG: meal.proteinG,
-      sodiumMg: meal.sodiumMg,
-      potassiumMg: meal.potassiumMg,
-      cholesterolMg: meal.cholesterolMg,
-      carbohydratesTotalG: meal.carbohydratesTotalG,
-      fiberG: meal.fiberG,
-      sugarG: meal.sugarG,
-      date: meal.date,
-      showDetails: false,
-    }));
+    const formattedUserDetails = {
+      email: userDetails.email,
+      name: userDetails.name,
+      surname: userDetails.surname,
+      weight: userDetails.weight,
+      height: userDetails.height,
+      goal: userDetails.goal,
+    };
 
-    console.log("Formatted: " + formattedMeals);
-
-    return new Response(JSON.stringify(formattedMeals), {
+    return new Response(JSON.stringify(formattedUserDetails), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

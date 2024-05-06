@@ -2,40 +2,44 @@ import React, { useState, useEffect } from "react";
 import TooltipMessage from "./TooltipMessage";
 import NotFoundMessage from "./NotFoundMessage";
 
-// Define an interface for the food entry if you're using TypeScript, otherwise just use PropTypes
-// interface FoodItem {
-//   name: string;
-//   calories: number;
-//   serving_size_g: number;
-//   fat_total_g: number;
-//   fat_saturated_g: number;
-//   protein_g: number;
-//   sodium_mg: number;
-//   potassium_mg: number;
-//   cholesterol_mg: number;
-//   carbohydrates_total_g: number;
-//   fiber_g: number;
-//   sugar_g: number;
-//}
-
 interface FoodEntry {
   id: string;
   mealType: string;
   mealName: string;
-  timestamp: string;
+  timestamp?: string;
   date: string;
   name: string;
   calories: number;
-  serving_size_g: number;
-  fat_total_g: number;
-  fat_saturated_g: number;
-  protein_g: number;
-  sodium_mg: number;
-  potassium_mg: number;
-  cholesterol_mg: number;
-  carbohydrates_total_g: number;
-  fiber_g: number;
-  sugar_g: number;
+  serving_size_g?: number;
+  fat_total_g?: number;
+  fat_saturated_g?: number;
+  protein_g?: number;
+  sodium_mg?: number;
+  potassium_mg?: number;
+  cholesterol_mg?: number;
+  carbohydrates_total_g?: number;
+  fiber_g?: number;
+  sugar_g?: number;
+  showDetails?: boolean,
+}
+
+interface MealEntry {
+  id: string;
+  mealType: string;
+  name: string;
+  calories: number;
+  servingSizeG?: number;
+  fatTotalG?: number;
+  fatSaturatedG?: number;
+  proteinG?: number;
+  sodiumMg?: number;
+  potassiumMg?: number;
+  cholesterolMg?: number;
+  carbohydratesTotalG?: number;
+  fiberG?: number;
+  sugarG?: number;
+  date: string;
+  showDetails: boolean;
 }
 
 function FoodPage() {
@@ -49,6 +53,35 @@ function FoodPage() {
     const now = new Date();
     return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`; // ISO format
   });
+  const [meals, setMeals] = useState<MealEntry[]>([]);
+  const [showOwnMeal,setShowOwnMeal] = useState(false);
+  const [errorState, setErrorState] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [loadingState, setLoadingState] = useState(false);
+  const [mealFilter, setMealFilter] = useState("");
+
+  const foodMessages = [
+    "Savor the Flavor, Not Just the Number!",
+    "Nutrition Matters: Eat Colorful, Live Colorful!",
+    "Good Eats, Great Life!",
+    "Balance on Your Plate, Balance in Your Life!",
+    "Feed Your Body, Nourish Your Soul!",
+    "Healthy Choices, Happy You!",
+    "Count Blessings, Not Just Calories!",
+    "Eat Mindfully, Live Joyfully!",
+    "From Kitchen to Confidence!",
+    "Wholesome Bites, Wholesome Delights!"
+  ];
+
+  const setRandomFoodMessage = () => {
+    const randomIndex = Math.floor(Math.random() * foodMessages.length);
+    setLoadingMessage(foodMessages[randomIndex]);
+  };
+
+  const filteredMeals = meals.filter(meal =>
+    meal.name.toLowerCase().includes(mealFilter.toLowerCase())
+  );
 
   // Meal types for selection
   const mealTypes = ["Breakfast", "Lunch", "Snack", "Dinner"];
@@ -75,20 +108,26 @@ function FoodPage() {
 
   // Function to handle tracking new food entries
   const trackFood = async () => {
-    // Reset the error message each time the function is called
     setErrorMessage("");
 
-    // Check if exercise input or duration is empty
+    //Validation
+    // Checks if exercise input or duration is empty
     if (!foodInput.trim()) {
       setErrorMessage("Please enter your meal.");
-      return; // Stop the execution if there's an error
+      setErrorState(true);
+      return;
     }
-    // Remove punctuation from the input, replacing it with spaces
+    // Removes punctuation from the input, replacing it with spaces
     const sanitizedFoodInput = foodInput
       .replace(/[.,"£\/#!$%\^&\*;:{}=\-_`~()]/g, " ")
       .replace(/\s{2,}/g, " ");
     console.log(sanitizedFoodInput);
 
+    setRandomFoodMessage();
+    setMessage("Tracking your food...");
+    setLoadingState(true);
+
+    setTimeout(async () => {
     try {
       const response = await fetch("/api/food", {
         method: "POST",
@@ -111,9 +150,7 @@ function FoodPage() {
           hour: "2-digit",
           minute: "2-digit",
         });
-        //console.log(data.data.length)
 
-        //const foodName = data.data[0].name.split(",")[0].trim();
         const foodID = data.foodId;
 
         const newEntry = {
@@ -136,70 +173,396 @@ function FoodPage() {
           sugar_g: data.data.sugar,
         };
 
-        console.log("New entry: " + newEntry);
-
         setFoodEntries((prevEntries) => [newEntry, ...prevEntries]);
-
-        console.log("New Entry: " + newEntry);
-        console.log("Food Entry: " + foodEntries);
         setFoodInput("");
+        setLoadingState(false);
+        setLoadingMessage("");
+        setMessage("");
       } else {
         throw new Error(data.error || "Failed to track the food");
       }
     } catch (error: any) {
       setErrorMessage(error.message);
+      setLoadingState(false);
+        setLoadingMessage("");
+        setMessage("");
+      setErrorState(true);
     }
+  }, 2000);
+  };
+
+
+//   const addMeal = async (meals:any) => {
+// console.log("meals:" + meals.name);
+//     const mealData = {
+//       mealName: meals.name,
+//       name: meals.name,
+//       calories: meals.calories,
+//       mealType: meals.mealType,
+//       servingSizeG: meals.servingSizeG,
+//       fatTotalG: meals.fatTotalG,
+//       fatSaturatedG: meals.fatSaturatedG,
+//       proteinG: meals.proteinG,
+//       sodiumMg: meals.sodiumMg,
+//       potassiumMg: meals.potassiumMg,
+//       cholesterolMg: meals.cholesterolMg,
+//       carbohydratesTotalG: meals.carbohydratesTotalG,
+//       fiberG: meals.fiberG,
+//       sugarG: meals.sugarG,
+//       date: meals.date // Ensure to send any other necessary fields
+//     }
+//     console.log(meals[0].name);
+//     try {
+//       const response = await fetch('/api/trackOwnMeal', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ mealData }),
+//       });
+  
+//       const data = await response.json();
+
+//      if (response.ok) {
+//         const mealID = data.mealId;
+//         console.log("Data: " + data.data.date);
+
+//         const currentDateTime = new Date();
+//         const formattedDate = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, "0")}-${currentDateTime.getDate().toString().padStart(2, "0")}`;
+//         const formattedTime = currentDateTime.toLocaleTimeString([], {
+//           hour: "2-digit",
+//           minute: "2-digit",
+//         });
+        
+//         const newEntry = {
+//           id: mealID,
+//           mealType: data.data.mealType,
+//           mealName: data.data.mealName,
+//           timestamp: formattedTime,
+//           date: formattedDate,
+//           name: data.data.name,
+//           calories: data.data.calories,
+//           serving_size_g: data.data.serving,
+//           fat_total_g: data.data.fat,
+//           fat_saturated_g: data.data.fatSat,
+//           protein_g: data.data.protein,
+//           sodium_mg: data.data.sodium,
+//           potassium_mg: data.data.potassium,
+//           cholesterol_mg: data.data.cholesterol,
+//           carbohydrates_total_g: data.data.carbohydrates,
+//           fiber_g: data.data.fiber,
+//           sugar_g: data.data.sugar,
+//         };
+
+//         //setFoodEntries((prevEntries) => [newEntry, ...prevEntries]);
+//         resetForm();
+//       } else {
+//         throw new Error(data.error || "Failed to add meal");
+//       }
+//     } catch (error: any) {
+//       setErrorMessage(error.message);
+//     }
+//   };
+  
+
+  // const addMeal = async () => {
+  //   if (!name || !calories) {
+  //     setErrorMessage("Please fill out all required fields.");
+  //     return;
+  //   }
+    
+
+  //   const mealData = {
+  //     mealType: mealType,
+  //     mealName: name,
+  //     name: name,
+  //     calories: Number(calories) || 0,
+  //     serving: servingSizeG ? Number(servingSizeG) : undefined,
+  //     fat: fatTotalG ? Number(fatTotalG) : undefined,
+  //     fatSat: fatSaturatedG ? Number(fatSaturatedG) : undefined,
+  //     protein: proteinG ? Number(proteinG) : undefined,
+  //     sodium: sodiumMg ? Number(sodiumMg) : undefined,
+  //     potassium: potassiumMg ? Number(potassiumMg) : undefined,
+  //     cholesterol: cholesterolMg ? Number(cholesterolMg) : undefined,
+  //     carbohydrates: carbohydratesTotalG
+  //       ? Number(carbohydratesTotalG)
+  //       : undefined,
+  //     fiber: fiberG ? Number(fiberG) : undefined,
+  //     sugar: sugarG ? Number(sugarG) : undefined,
+  //     date: new Date().toISOString(),
+  //   };
+
+  //   try {
+  //     const response = await fetch("/api/meal", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ mealData }),
+  //       credentials: "include", // This will include cookies with the request
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       const mealID = data.mealId;
+  //       console.log("Data: " + data.data.date);
+
+  //       const currentDateTime = new Date();
+  //       const formattedDate = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, "0")}-${currentDateTime.getDate().toString().padStart(2, "0")}`;
+  //       const formattedTime = currentDateTime.toLocaleTimeString([], {
+  //         hour: "2-digit",
+  //         minute: "2-digit",
+  //       });
+        
+  //       const newEntry = {
+  //         id: mealID,
+  //         mealType: data.data.mealType,
+  //         mealName: data.data.mealName,
+  //         timestamp: formattedTime,
+  //         date: formattedDate,
+  //         name: data.data.name,
+  //         calories: data.data.calories,
+  //         serving_size_g: data.data.serving,
+  //         fat_total_g: data.data.fat,
+  //         fat_saturated_g: data.data.fatSat,
+  //         protein_g: data.data.protein,
+  //         sodium_mg: data.data.sodium,
+  //         potassium_mg: data.data.potassium,
+  //         cholesterol_mg: data.data.cholesterol,
+  //         carbohydrates_total_g: data.data.carbohydrates,
+  //         fiber_g: data.data.fiber,
+  //         sugar_g: data.data.sugar,
+  //       };
+
+  //       setFoodEntries((prevEntries) => [newEntry, ...prevEntries]);
+  //       resetForm();
+  //     } else {
+  //       throw new Error(data.error || "Failed to add meal");
+  //     }
+  //   } catch (error: any) {
+  //     setErrorMessage(error.message);
+  //   }
+  // };
+
+  //Tracks the meals that the user has created in the meal page
+  const addMeal = async (meal:any) => {
+  
+    // Destructuring the meal object to access its properties directly
+    const { name, calories, mealType, servingSizeG, fatTotalG, fatSaturatedG, proteinG, sodiumMg, potassiumMg, cholesterolMg, carbohydratesTotalG, fiberG, sugarG, date } = meal;
+
+    
+  
+    // Preparing the data object to be sent to the API
+    const mealData = {
+      mealName: name,
+      name: name,
+      calories,
+      mealType,
+      serving: servingSizeG,
+      fat: fatTotalG,
+      fatSat: fatSaturatedG,
+      protein: proteinG,
+      sodium: sodiumMg,
+      potassium: potassiumMg,
+      cholesterol: cholesterolMg,
+      carbohydrates: carbohydratesTotalG,
+      fiber: fiberG,
+      sugar: sugarG,
+      date
+    };
+    setRandomFoodMessage();
+    setMessage("Adding meal...");
+    setLoadingState(true);
+
+    setTimeout(async () => {
+      try {
+      const response = await fetch('/api/trackOwnMeal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mealData }),
+      });
+  
+      const data = await response.json();
+  
+      // Log the server response
+      console.log("Server Response:", data);
+  
+      if (response.ok) {
+        const mealID = data.mealId;
+        console.log("Meal ID:", mealID);
+        console.log("Server Data:", data.data);
+  
+        const currentDateTime = new Date();
+        const formattedDate = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, "0")}-${currentDateTime.getDate().toString().padStart(2, "0")}`;
+        const formattedTime = currentDateTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+  
+        const newEntry = {
+          id: mealID,
+          mealType: data.data.mealType,
+          mealName: data.data.mealName,
+          timestamp: formattedTime,
+          date: formattedDate,
+          name: data.data.name,
+          calories: data.data.calories,
+          serving_size_g: data.data.serving,
+          fat_total_g: data.data.fat,
+          fat_saturated_g: data.data.fatSat,
+          protein_g: data.data.protein,
+          sodium_mg: data.data.sodium,
+          potassium_mg: data.data.potassium,
+          cholesterol_mg: data.data.cholesterol,
+          carbohydrates_total_g: data.data.carbohydrates,
+          fiber_g: data.data.fiber,
+          sugar_g: data.data.sugar,
+        };
+  
+        // Optionally update local state with the new entry
+        setFoodEntries((prevEntries) => [newEntry, ...prevEntries]);
+        resetForm();
+        setLoadingState(false);
+        setLoadingMessage("");
+        setMessage("");
+      } else {
+        throw new Error(data.error || "Failed to add meal");
+      }
+    } catch (error:any) {
+      console.error("Error in addMeal:", error);
+      setErrorMessage(error.message);
+      setLoadingState(false);
+      setLoadingMessage("");
+      setMessage("");
+      setErrorState(true);
+    }
+  }, 2000);
+  };
+  
+
+  const resetForm = () => {
+    setErrorMessage("");
   };
 
   useEffect(() => {
     const fetchFoods = async () => {
+    setLoadingMessage("Getting your meals from the database :)");
+    setLoadingState(true);
       try {
         const response = await fetch("/api/getFoods", {
           method: "GET",
           credentials: "include",
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch foods");
         }
-  
+
         const data = await response.json();
+
         if (Array.isArray(data)) {
-          setFoodEntries(data
-            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-            .map((item) => ({
-                            id: item._id,
-              mealType: item.mealType,
-              mealName: item.mealName,
-              timestamp: new Date(item.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-              date: new Date(item.timestamp).toISOString().split("T")[0],
-              name: item.name,
-              calories: item.calories,
-              serving_size_g: item.serving_size_g,
-              fat_total_g: item.fat_total_g,
-              fat_saturated_g: item.fat_saturated_g,
-              protein_g: item.protein_g,
-              sodium_mg: item.sodium_mg,
-              potassium_mg: item.potassium_mg,
-              cholesterol_mg: item.cholesterol_mg,
-              carbohydrates_total_g: item.carbohydrates_total_g,
-              fiber_g: item.fiber_g,
-              sugar_g: item.sugar_g,
-            })),
+          setFoodEntries(
+            data
+              .sort(
+                (a, b) =>
+                  new Date(b.timestamp).getTime() -
+                  new Date(a.timestamp).getTime(),
+              )
+              .map((item) => ({
+                id: item._id,
+                mealType: item.mealType,
+                mealName: item.mealName,
+                timestamp: new Date(item.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+                date: new Date(item.timestamp).toISOString().split("T")[0],
+                name: item.name,
+                calories: item.calories,
+                serving_size_g: item.serving_size_g,
+                fat_total_g: item.fat_total_g,
+                fat_saturated_g: item.fat_saturated_g,
+                protein_g: item.protein_g,
+                sodium_mg: item.sodium_mg,
+                potassium_mg: item.potassium_mg,
+                cholesterol_mg: item.cholesterol_mg,
+                carbohydrates_total_g: item.carbohydrates_total_g,
+                fiber_g: item.fiber_g,
+                sugar_g: item.sugar_g,
+              })),
           );
+          setLoadingState(false);
+        setLoadingMessage("");
         } else {
           console.error("Received data is not an array:", data);
         }
       } catch (error: any) {
         console.error("Error fetching foods:", error);
         setErrorMessage(error.message);
+        setLoadingState(false);
+        setLoadingMessage("");
+        setErrorState(true);
+      }
+    };
+
+    fetchFoods();
+  }, []);
+  useEffect(() => {
+    const fetchMeals = async () => {
+      try {
+        const response = await fetch("/api/getMeals", {
+          method: "GET",
+          credentials: "include", // to ensure cookies are sent
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch meals");
+        }
+        const data = await response.json();
+  
+        // Log the complete data array received from the server
+        console.log("Data received:", data);
+  
+        if (Array.isArray(data)) {
+          const mappedMeals = data.map((item) => ({
+            id: item.id,
+            mealType: item.mealType || "N/A", // Default to "N/A" if undefined
+            name: item.name || "Unnamed Meal", // Provide a default name
+            calories: item.calories || 0, // Default to 0 if undefined
+            servingSizeG: item.servingSizeG || 0,
+            fatTotalG: item.fatTotalG || 0,
+            fatSaturatedG: item.fatSaturatedG || 0,
+            proteinG: item.proteinG || 0,
+            sodiumMg: item.sodiumMg || 0,
+            potassiumMg: item.potassiumMg || 0,
+            cholesterolMg: item.cholesterolMg || 0,
+            carbohydratesTotalG: item.carbohydratesTotalG || 0,
+            fiberG: item.fiberG || 0,
+            sugarG: item.sugarG || 0,
+            date: new Date(item.date).toISOString().split("T")[0], // Formatting date to YYYY-MM-DD
+            showDetails: false, // Default showDetails
+          }));
+          
+          console.log("Mapped Meals:", mappedMeals); // Log the final mapped meals array
+          setMeals(mappedMeals);
+          setLoadingState(false);
+        setLoadingMessage("");
+        } else {
+          console.error("Received data is not an array:", data);
+        }
+      } catch (error:any) {
+        console.error("Error fetching meals:", error);
+        setErrorMessage(error.message || "Failed to fetch meals");
+        setLoadingState(false);
+        setLoadingMessage("");
+        setErrorState(true);
       }
     };
   
-    fetchFoods();
+    fetchMeals();
   }, []);
   
 
@@ -226,6 +589,7 @@ function FoodPage() {
     } catch (error: any) {
       console.error("Delete exercise error:", error);
       setErrorMessage(error.message || "Failed to delete exercise");
+      setErrorState(true);
     }
   };
 
@@ -233,13 +597,35 @@ function FoodPage() {
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
   };
+  
 
   return (
     <main className="w-full min-h-screen bg-blue-200">
-      <div className="p-4 ">
-        <div className="mp-4 p-4 sm:ml-64 border-2 border-gray-700 border-dashed rounded-lg">
-          <div className="p-4 border border-white border rounded-lg dark:border-white">
-            <h1 className="text-xl font-bold mb-4">Food Log</h1>
+      <div className="p-4 md:ml-64">
+      {loadingState && (
+  <div
+    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+    id="my-modal"
+  >
+    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+      <div className="mt-3">
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            {loadingMessage && <p className="text-zinc-900 text-center font-bold text-lg">{loadingMessage}</p>}
+          </p>
+          <p className="text-sm text-gray-500">
+            {message && <p className="text-black text-center text-sm mt-3">{message}</p>}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+        <div className="mp-4 p-4 max-w-4xl mx-auto">
+          <div className="p-4 border-white bg-white shadow-lg border rounded-lg dark:border-white">
+            <h1 className="text-xl font-bold mb-4">Meal Log</h1>
+            {!showOwnMeal && (
+            <>
             <div className="mb-2">
               <select
                 value={mealType}
@@ -258,14 +644,14 @@ function FoodPage() {
                 type="text"
                 value={foodInput}
                 onChange={(e) => setFoodInput(e.target.value)}
-                className="flex-1 px-4 py-2 border rounded-md bg-white border-gray-900"
+                className="w-full flex-1 px-4 py-2 border rounded-md bg-white border-gray-900"
                 placeholder="Type your meal"
                 list="foods-list"
                 required
               />
               <button
                 onClick={toggleTooltip}
-                className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
+                className="block px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
                 aria-label="Info"
               >
                 ?
@@ -280,24 +666,108 @@ function FoodPage() {
                   ))}
               </datalist>
             </div>
-            {showTooltip && (
-              <TooltipMessage
-                onClose={toggleTooltip}
-                message="Even if your desired meal is not in the dropdown menu, it could still be in the database. Therefore, please don't hesitate to check it by clicking the Track button."
-              />
-            )}
-            {errorMessage && (
-              <div className="mb-2 text-red-500 p-2">{errorMessage}</div>
-            )}
             <button
               onClick={trackFood}
               className="px-4 py-2 mt-1 text-white bg-blue-500 rounded hover:bg-blue-700"
             >
               Track
             </button>
+            </>
+)}
+
+            {showOwnMeal && (
+              <>
+              <div className="mt-4">
+          <input
+            type="text"
+            value={mealFilter}
+            onChange={(e) => setMealFilter(e.target.value)}
+            placeholder="Filter by meal name"
+            className="flex-1 w-full px-4 py-2 border rounded-md bg-white border-gray-900"
+          />
+        </div>
+  <div className="h-60 overflow-y-auto">
+  {filteredMeals.length === 0 ? (
+            <NotFoundMessage itemType="meals" />
+          ) : (
+            filteredMeals.map((meal) => (
+              <div key={meal.id} className="bg-blue-100 p-2 mt-2 border border-gray-900 rounded-lg">
+                <h1>Name: {meal.name}</h1>
+                <h1>Type: {meal.mealType}</h1>
+                <h1>Calories: {meal.calories} kcal</h1>
+                <button
+              onClick={() => addMeal(meal)}
+              className="px-3 py-1 mt-1 text-white bg-blue-500 rounded hover:bg-blue-700"
+            >
+              Track
+            </button>
+        </div>
+      ))
+    )}
+  </div>
+  </>
+)}
+
+{showTooltip && (
+                 <div
+                 className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+                 id="my-modal"
+               >
+                             <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
+                   <div className="mt-3">
+                     
+                     <div className="mt-2 px-7 py-3">
+                       <p className="text-sm text-gray-500">
+                       <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don't hesitate to track it by clicking the Track button.</p>
+                       </p>
+                     </div>
+                     <div className="items-center px-4 py-3">
+                       <button
+                         onClick={() => setShowTooltip(false)}
+                         className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       >
+                         Close
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+                 </div>
+                
+              )}
+            {errorState && (
+              <div
+                className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+                id="my-modal"
+              >
+            <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
+                  <div className="mt-3">
+                    
+                    <div className="mt-2 px-7 py-3">
+                      <p className="text-sm text-gray-500">
+                      {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
+                      </p>
+                    </div>
+                    <div className="items-center px-4 py-3">
+                      <button
+                        onClick={() => setErrorState(false)}
+                        className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                </div>
+            )}
+            <button
+              onClick={() => setShowOwnMeal(!showOwnMeal)}
+              className="ml-3 col-span-2 mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+            >
+              {showOwnMeal ? "Go Back" : "Add Own Meal"}
+            </button>
           </div>
 
-          <div className="mt-4 p-4 w-full h-full p-4 border border-white border rounded-lg dark:border-white">
+          <div className="flex flex-col mt-4 p-4 w-full h-full bg-white shadow-lg border-white border rounded-lg dark:border-white">
             <input
               type="text"
               value={mealNameFilter}
@@ -309,10 +779,10 @@ function FoodPage() {
               type="date"
               value={dateFilter} // Already in YYYY-MM-DD format, no need to convert
               onChange={(e) => setDateFilter(e.target.value)} // Directly set the ISO format date
-              className="m-3 px-4 py-2 border rounded-md bg-white border-gray-900"
+              className="mt-3 px-4 py-2 border rounded-md bg-white border-gray-900"
             />
 
-            <div className="mt-4 p-4 w-full h-full border border-white rounded-lg dark:border-white">
+<div className="mt-4 p-4 w-full h-96 overflow-y-auto border border-white rounded-lg dark:border-white">
               {foodEntries.filter(
                 (entry) =>
                   entry.name
@@ -323,42 +793,45 @@ function FoodPage() {
                 <NotFoundMessage itemType="meals" />
               ) : (
                 foodEntries
-                .filter(
-                  (entry) =>
-                    entry.name.toLowerCase().includes(mealNameFilter.toLowerCase()) &&
-                    entry.date === dateFilter,
-                )
-                .map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="bg-blue-100 p-2 mt-2 border border-gray-900 rounded-lg"
-                  >
-                    <h1>
-                      {entry.mealName} - {entry.mealType}
-                    </h1>
-                    <div className="bg-blue-100 p-2 mt-2 border border-white rounded-lg">
-                      <h3 className="font-bold">{`Food logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}</h3>
-                      <p>Calories: {entry.calories} kcal</p>
-                      <p>Serving Size: {entry.serving_size_g}g</p>
-                      <p>
-                        Fat: {entry.fat_total_g}g (Saturated: {entry.fat_saturated_g}g)
-                      </p>
-                      <p>Protein: {entry.protein_g}g</p>
-                      <p>Sodium: {entry.sodium_mg}mg</p>
-                      <p>Potassium: {entry.potassium_mg}mg</p>
-                      <p>Cholesterol: {entry.cholesterol_mg}mg</p>
-                      <p>
-                        Carbohydrates: {entry.carbohydrates_total_g}g (Fiber: {entry.fiber_g}g, Sugar: {entry.sugar_g}g)
-                      </p>
-                      <button
-                        onClick={() => deleteFoodEntry(entry.id)}
-                        className="px-4 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
+                  .filter(
+                    (entry) =>
+                      entry.name
+                        .toLowerCase()
+                        .includes(mealNameFilter.toLowerCase()) &&
+                      entry.date === dateFilter,
+                  )
+                  .map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="bg-blue-100 p-2 mt-2 border border-gray-900 rounded-lg"
+                    >
+                      <h1 className="ml-2 mt-2 font-bold">
+                        {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
+                      </h1>
+                      <div className="bg-blue-100 p-2 border rounded-lg">
+                        <p>Calories: {entry.calories} kcal</p>
+                        <p>Serving Size: {entry.serving_size_g || 0}g</p>
+                        <p>
+                          Fat: {entry.fat_total_g || 0}g (Saturated:{" "}
+                          {entry.fat_saturated_g || 0}g)
+                        </p>
+                        <p>Protein: {entry.protein_g || 0}g</p>
+                        <p>Sodium: {entry.sodium_mg || 0}mg</p>
+                        <p>Potassium: {entry.potassium_mg || 0}mg</p>
+                        <p>Cholesterol: {entry.cholesterol_mg || 0}mg</p>
+                        <p>
+                          Carbohydrates: {entry.carbohydrates_total_g || 0}g (Fiber:{" "}
+                          {entry.fiber_g || 0}g, Sugar: {entry.sugar_g || 0}g)
+                        </p>
+                        <button
+                          onClick={() => deleteFoodEntry(entry.id)}
+                          className="px-4 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))              
+                  ))
               )}
             </div>
           </div>

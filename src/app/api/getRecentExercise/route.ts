@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   if (request.method !== "GET") {
@@ -11,10 +11,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    // const cookies = request.cookies;
-    // const userID = cookies.userID; // Assuming the cookie contains the userID directly
     const cookie: any = cookies().get("userID");
-    const userID = cookie.value;
+    const userID = cookie ? cookie.value : null;
 
     if (!userID) {
       return new Response(
@@ -30,25 +28,41 @@ export async function GET(request: Request) {
     const db = client.db("aifitnessdb");
     const collection = db.collection("exercises");
 
-    const exercises = await collection.find({ userID }).toArray();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const formattedExercises = exercises.map((exercise) => ({
-      _id: exercise._id.toString(), // Convert ObjectId to string
-      userID: exercise.userID, // Usually already a string, ensure this if necessary
-      activity: exercise.activity,
-      duration: exercise.duration,
-      caloriesBurned: exercise.caloriesBurned,
-      timestamp: exercise.timestamp.toISOString(), // Convert Date to ISO string
-    }));
+    const exercises = await collection
+      .find({
+        userID: userID,
+        date: {
+          $gte: today.toISOString(),
+          $lt: tomorrow.toISOString(),
+        },
+      })
+      .toArray();
 
-    console.log("Formatted: " + formattedExercises);
+    const recentExercise = exercises
+      .map((exercise) => ({
+        activity: exercise.activity,
+        duration: exercise.duration,
+        calories: exercise.caloriesBurned,
+        timeLogged: exercise.date,
+      }))
+      .sort((a, b) => b.timeLogged.localeCompare(a.timeLogged));
 
-    return new Response(JSON.stringify(formattedExercises), {
+    const totalCalories = recentExercise.reduce(
+      (acc, exercise) => acc + exercise.calories,
+      0,
+    );
+
+    return new Response(JSON.stringify({ recentExercise, totalCalories }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    console.error("Failed to retrieve exercises", error);
+    console.error("Failed to retrieve exercise", error);
     return new Response(JSON.stringify({ error: "Failed to retrieve data" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

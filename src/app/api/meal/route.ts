@@ -49,6 +49,7 @@ export async function POST(req: Request) {
       userID,
       ...mealData,
       timestamp: new Date(),
+      date: new Date().toISOString()
     };
 
     const insertionResult = await collection.insertOne(mealDoc);
@@ -59,7 +60,7 @@ export async function POST(req: Request) {
       return new Response(
         JSON.stringify({
           message: "Meal logged successfully",
-          data: mealData,
+          data: mealDoc,
           mealId: insertionResult.insertedId,
         }),
       );

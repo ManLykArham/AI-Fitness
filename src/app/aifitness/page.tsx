@@ -21,8 +21,8 @@ const Home: React.FC = () => {
       <Navigation onNavigate={handleNavigation} />
       {currentPage === "dashboard" && <DashboardPage />}
       {currentPage === "exercise" && <ExercisePage />}
-      {currentPage === "food" && <FoodPage />}
-      {currentPage === "meal" && <MealPage />}
+      {currentPage === "meal" && <FoodPage />}
+      {currentPage === "ownMeal" && <MealPage />}
       {currentPage === "chatbot" && <ChatBotPage />}
       {currentPage === "setting" && <SettingPage />}
     </div>
