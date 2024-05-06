@@ -308,12 +308,6 @@ const DashboardPage = () => {
                 <h1 className="mt-2 font-bold">Recent exercise</h1>
                 {recentExercise && (
                   <h1>{`Name: ${recentExercise.activity} - ${recentExercise.duration} mins - ${recentExercise.calories.toFixed(2)} kcal at ${new Date(recentExercise.timeLogged).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</h1>
-              //     <>
-              //     <h1>{`Name: ${recentExercise.activity}`}</h1>
-              //     <h1>{`Duration: ${recentExercise.duration} mins`}</h1>
-              //     <h1>{`Calories: ${recentExercise.calories.toFixed(2)} kcal`}</h1>
-              //     <h1>{`At ${new Date(recentExercise.timeLogged).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</h1>
-              //  </>
                 )}
               </div>
             </div>

@@ -1,8 +1,6 @@
 import { MongoClient } from "mongodb";
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { serialize } from "cookie";
 import { Db } from "mongodb";
 import { cookies } from "next/headers";
 
@@ -54,20 +52,12 @@ export async function POST(request: Request) {
     const result = await db.collection("users").insertOne(newUser);
     const userId = result.insertedId.toString();
 
-     // Generate a JWT
-     const secretKey = 'gqR8!f5#Pz'; // This should be stored securely and accessed via environment variables
-     const token = jwt.sign({ userId }, secretKey, { expiresIn: '2h' });
- 
-     // Set the JWT in a httpOnly cookie
-     cookies().set({
-       name: "authToken",
-       value: token,
-       httpOnly: true,
-       path: "/",
-       secure: true, // set to true in production
-       sameSite: 'strict',
-     });
- 
+    cookies().set({
+      name: "userID",
+      value: userId,
+      httpOnly: true,
+      path: "/",
+    });
     // Send the response with the token and user ID
     return new Response(
       JSON.stringify({ message: "Signup successful", userId }),

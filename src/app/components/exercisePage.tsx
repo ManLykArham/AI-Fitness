@@ -1,11 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import TooltipMessage from "./TooltipMessage";
 import NotFoundMessage from "./NotFoundMessage";
-import { timeStamp } from "console";
-import { date } from "zod";
-import { connectToDatabase } from "@/app/lib/dbConnection";
-import { ObjectId } from "mongodb"; // Ensure you import ObjectId
 
 interface Exercise {
   id: string;

@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import TnCModal from "./TnCModal";
-
 function RegisterPage() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
