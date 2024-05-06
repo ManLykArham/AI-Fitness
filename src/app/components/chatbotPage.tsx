@@ -135,7 +135,7 @@ function ChatBotPage() {
   return (
     <main className="w-full min-h-screen bg-blue-200 p-4">
       <div className="p-4 md:ml-64">
-        <div className="mt-12 bg-white border rounded-lg flex flex-col h-[85vh] justify-between max-w-4xl mx-auto">
+        <div className="sm:mt-12 bg-white border rounded-lg flex flex-col h-[85vh] justify-between max-w-4xl mx-auto">
           {!showChat ? (
             <div className="flex justify-center items-center space-x-4 h-[95vh]">
               <button onClick={() => handleChatSelection('generic')} className="bg-white text-black p-2 m-3 rounded border-2 border-zinc-700 hover:bg-blue-300 hover:font-bold hover:border-blue-700">Generic Chatbot</button>
