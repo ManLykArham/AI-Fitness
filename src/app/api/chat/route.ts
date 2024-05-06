@@ -1,7 +1,6 @@
 import OpenAI from "openai";
-import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
-import { Chat } from "openai/resources/index.mjs";
-import { threadId } from "worker_threads";
+import { TextContentBlock } from "openai/resources/beta/threads/messages";
+
 //export const maxDuration = 200;
 // Server-side imports and API endpoint
 

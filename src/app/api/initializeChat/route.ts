@@ -1,7 +1,6 @@
 // pages/api/initializeChat.ts
 import OpenAI from "openai";
-import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
-import { cookies } from "next/headers";
+import { TextContentBlock } from "openai/resources/beta/threads/messages";
 
 if (!process.env.OPENAI_API_KEY! || !process.env.OPENAI_ASSISTANT_ID!) {
   console.error("Missing necessary environment variables: OPENAI_API_KEY, OPENAI_ASSISTANT_ID");
