@@ -1,6 +1,8 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
 import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
@@ -12,10 +14,23 @@ export async function GET(request: Request) {
   }
 
   try {
-    // const cookies = request.cookies;
-    // const userID = cookies.userID; // Assuming the cookie contains the userID directly
-    const cookie: any = cookies().get("userID");
-    const userID = cookie.value;
+  // Extract the token from the cookies
+  const cookie = cookies().get("token");
+  const token = cookie ? cookie.value : null;
+
+  if (!token) {
+    return new Response(
+      JSON.stringify({ error: "Authentication required" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  // Verify and decode the JWT token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+  const userID = (decoded as any).userId;
 
     if (!userID) {
       return new Response(

@@ -1,7 +1,6 @@
 // /api/exercise/route.ts
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import jwt from "jsonwebtoken";
-import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -11,21 +10,34 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   }
-  const token: any = cookies().get("userID");
   const { mealData } = await req.json();
+// Extract the token from the cookies
+const cookie = cookies().get("token");
+const token = cookie ? cookie.value : null;
 
-  //const cookies = parseCookies(req as Request);
-  //const token = cookies.token;
-  console.log(token);
-  const userID = token.value;
-  console.log(userID);
-
-  if (!token) {
-    return new Response(JSON.stringify({ error: "Authentication required" }), {
+if (!token) {
+  return new Response(
+    JSON.stringify({ error: "Authentication required" }),
+    {
       status: 401,
       headers: { "Content-Type": "application/json" },
-    });
-  }
+    },
+  );
+}
+
+// Verify and decode the JWT token
+const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+const userID = (decoded as any).userId;
+
+if (!userID) {
+  return new Response(
+    JSON.stringify({ error: "Invalid token" }),
+    {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+}
 
   // let userId;
   // try {
