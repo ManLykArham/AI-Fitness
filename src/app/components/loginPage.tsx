@@ -74,31 +74,26 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-blue-500">
-            {loadingState && (
-  <div
-    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    id="my-modal"
-  >
-    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+      {loadingState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
       <div className="mt-3">
         <div className="mt-2 px-7 py-3">
           <p className="text-sm text-gray-500">
             {loadingMessage && <p className="text-green-500 text-center font-bold text-lg">{loadingMessage}</p>}
           </p>
           <p className="text-sm text-gray-500">
-            <p className="text-black text-center text-sm mt-3">Logging you in :)</p>
+            <p className="text-black text-center text-sm mt-3">One moment please...</p>
           </p>
         </div>
       </div>
     </div>
   </div>
 )}
-      {errorState && (
-  <div
-    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    id="my-modal"
-  >
-    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
+
+{errorState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
       <div className="mt-3">
         <div className="mt-2 px-7 py-3">
           <p className="text-sm text-gray-500">
@@ -118,7 +113,7 @@ const LoginPage: React.FC = () => {
   </div>
 )}
 
-      <div className="sm:w-1/2 md:w-full max-w-md p-8 space-y-3 rounded-lg bg-white shadow-lg ">
+      <div className="sm:w-1/2 md:w-full max-w-md p-8 space-y-3 rounded-lg bg-white shadow-lg mx-5 my-5 fade-in">
         <h1 className="text-2xl font-bold text-center text-gray-800">Login</h1>
         <form className="space-y-6" onSubmit={handleLogin}>
           <div>

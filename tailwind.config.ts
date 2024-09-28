@@ -10,17 +10,20 @@ module.exports = {
     transparent: "transparent",
     current: "currentColor",
     extend: {
+      screens: {
+        'xs': '300px', // Custom extra small breakpoint
+      },
       keyframes: {
         borderPulseWarning: {
-          '0%, 100%': { borderColor: 'red' }, // Example using direct color values
+          '0%, 100%': { borderColor: 'red' }, 
           '50%': { borderColor: 'white' },
         },
         borderPulseLoad: {
-          '0%, 100%': { borderColor: '#00B9FF' }, // Example using direct color values
+          '0%, 100%': { borderColor: '#00B9FF' }, 
           '50%': { borderColor: 'white' },
         },
       },
-      // Reference these keyframes in the 'animation' section
+     
       animation: {
         'border-pulse-warning': 'borderPulseWarning 0.75s infinite',
         'border-pulse-load': 'borderPulseLoad 1.5s infinite',

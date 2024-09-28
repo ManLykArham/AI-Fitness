@@ -4,8 +4,8 @@ import Link from "next/link";
 function LandingPage() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen w-full m-0 p-0 bg-blue-500">
-      <div className="w-full max-w-lg p-8 space-y-3 rounded-lg bg-white shadow-lg border-2 border-sky-700">
-        <h1 className="text-black text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold mb-8 text-center">
+      <div className="xs:w-80 sm:w-full mx-5 max-w-lg p-8 space-y-3 rounded-lg bg-white shadow-lg border-2 border-sky-700 fade-in">
+        <h1 className="text-black text-xl sm:text-xl md:text-2xl lg:text-4xl font-bold mb-8 text-center">
           Welcome to AI Fitness
         </h1>
         <div className="flex justify-center space-x-4 content-center">

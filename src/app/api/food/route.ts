@@ -87,20 +87,23 @@ export async function POST(req: Request) {
     let totalFiber = 0;
     let totalSugar = 0;
 
+    // Loops through each food item, ensures that each value is a number; if it's undefined or not a number, defaults to 0 to prevent errors.
     for (let i = 0; i < data.length; i++) {
       const food = data[i];
-      totalCal += food.calories;
-      totalServ += food.serving_size_g;
-      totalFat += food.fat_total_g;
-      totalFatSat += food.fat_saturated_g;
-      totalProtein += food.protein_g;
-      totalSodium += food.sodium_mg;
-      totalPotassium += food.potassium_mg;
-      totalCholesterol += food.cholesterol_mg;
-      totalCarbohydrates += food.carbohydrates_total_g;
-      totalFiber += food.fiber_g;
-      totalSugar += food.sugar_g;
+      
+      totalCal += isNaN(parseFloat(food.calories)) ? 0 : parseFloat(food.calories);
+      totalServ += isNaN(parseFloat(food.serving_size_g)) ? 0 : parseFloat(food.serving_size_g);
+      totalFat += isNaN(parseFloat(food.fat_total_g)) ? 0 : parseFloat(food.fat_total_g);
+      totalFatSat += isNaN(parseFloat(food.fat_saturated_g)) ? 0 : parseFloat(food.fat_saturated_g);
+      totalProtein += isNaN(parseFloat(food.protein_g)) ? 0 : parseFloat(food.protein_g);
+      totalSodium += isNaN(parseFloat(food.sodium_mg)) ? 0 : parseFloat(food.sodium_mg);
+      totalPotassium += isNaN(parseFloat(food.potassium_mg)) ? 0 : parseFloat(food.potassium_mg);
+      totalCholesterol += isNaN(parseFloat(food.cholesterol_mg)) ? 0 : parseFloat(food.cholesterol_mg);
+      totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g)) ? 0 : parseFloat(food.carbohydrates_total_g);
+      totalFiber += isNaN(parseFloat(food.fiber_g)) ? 0 : parseFloat(food.fiber_g);
+      totalSugar += isNaN(parseFloat(food.sugar_g)) ? 0 : parseFloat(food.sugar_g);
     }
+
 
     const foodData = {
       userID,

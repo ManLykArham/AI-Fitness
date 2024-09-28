@@ -1,4 +1,4 @@
-// pages/index.tsx or a similar file
+
 "use client";
 import React, { useState } from "react";
 import Navigation from "../components/Navigation";

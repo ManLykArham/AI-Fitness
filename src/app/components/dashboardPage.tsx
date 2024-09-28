@@ -202,7 +202,7 @@ const DashboardPage = () => {
 
   return (
     <main className="w-full min-h-screen bg-blue-200">
-      <div className="p-4 md:ml-64">
+      <div className="p-4 md:ml-64 fade-in">
         <div className="mp-4 p-4 max-w-4xl mx-auto">
           <div className="p-4 border border-white bg-white rounded-lg shadow-lg dark:border-white ">
             <div className="sm:flex sm:flex-col sm:-mx-2 ">
@@ -251,69 +251,72 @@ const DashboardPage = () => {
               </div>
             </div>
             {userAuthState && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-                <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
-                  <div className="mt-3">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {userAuthMessage && <h3 className="text-red-500 text-lg leading-6 font-medium">{userAuthMessage}</h3>}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            )}
-            {showInfo && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-                <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
-                  <div className="mt-3">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Important Information</h3>
-                    <div className="mt-2 px-7 py-3">
-                      <p className="text-sm text-gray-500">
-                        Please be careful when setting your calorie goals. According to NHS, the recommended daily calorie intake for the average person is:
-                        <ul className="text-left">
-                          <li>2,500kcal for men</li>
-                          <li>2,000kcal for women</li>
-                        </ul>
-                        And when trying to lose weight, the average person should aim to reduce their daily calorie intake by about 600kcal. That means reducing calories from the recommended daily
-                        allowance to:
-                        <ul className="text-left">
-                          <li>1,900kcal for men</li>
-                          <li>1,400kcal for women</li>
-                        </ul>
-                        Going below these numbers will put you at risk of developing eating disorders or injuries.
-                        <p className="font-bold">Just a reminder: Don&apos;t focus on the numbers, focus on being well overall :)</p>
-                      </p>
-                    </div>
-                    <div className="items-center px-4 py-3">
-                      <button
-                        onClick={() => setShowInfo(false)}
-                        className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full" id="my-modal">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white">
+      <div className="mt-3">
+        <h3 className="text-lg leading-6 font-medium text-gray-900">
+          {userAuthMessage && <h3 className="text-red-500 text-lg leading-6 font-medium">{userAuthMessage}</h3>}
+        </h3>
+      </div>
+    </div>
+  </div>
+)}
+
+           {showInfo && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full" id="my-modal">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white">
+      <div className="mt-3">
+        <h3 className="text-lg leading-6 font-medium text-gray-900">Important Information</h3>
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            Please be careful when setting your calorie goals. According to NHS, the recommended daily calorie intake for the average person is:
+            <ul className="text-left">
+              <li>2,500kcal for men</li>
+              <li>2,000kcal for women</li>
+            </ul>
+            And when trying to lose weight, the average person should aim to reduce their daily calorie intake by about 600kcal. That means reducing calories from the recommended daily allowance to:
+            <ul className="text-left">
+              <li>1,900kcal for men</li>
+              <li>1,400kcal for women</li>
+            </ul>
+            Going below these numbers will put you at risk of developing eating disorders or injuries.
+            <p className="font-bold">Just a reminder: Don&apos;t focus on the numbers, focus on being well overall :)</p>
+          </p>
+        </div>
+        <div className="items-center px-4 py-3">
+          <button
+            onClick={() => setShowInfo(false)}
+            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
             {errorState && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-                <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
-                  <div className="mt-3">
-                    <div className="mt-2 px-7 py-3">
-                      <p className="text-sm text-gray-500">{errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}</p>
-                    </div>
-                    <div className="items-center px-4 py-3">
-                      <button
-                        onClick={() => setErrorState(false)}
-                        className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
+      <div className="mt-3">
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
+          </p>
+        </div>
+        <div className="items-center px-4 py-3">
+          <button
+            onClick={() => setErrorState(false)}
+            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
           </div>
           {/* Container for Calorie Intake and Calories Burned sections */}
           <div className="bg-white rounded-lg mt-3 shadow-lg">

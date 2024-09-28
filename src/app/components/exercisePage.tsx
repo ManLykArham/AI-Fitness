@@ -229,20 +229,17 @@ function ExercisePage() {
 
   return (
     <main className="w-full min-h-screen bg-blue-200">
-      <div className="p-4 md:ml-64">
+      <div className="p-4 md:ml-64 fade-in">
       {loadingState && (
-  <div
-    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    id="my-modal"
-  >
-    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
       <div className="mt-3">
         <div className="mt-2 px-7 py-3">
           <p className="text-sm text-gray-500">
-            {loadingMessage && <p className="text-zinc-900 text-center font-bold text-lg">{loadingMessage}</p>}
+            {loadingMessage && <p className="text-green-500 text-center font-bold text-lg">{loadingMessage}</p>}
           </p>
           <p className="text-sm text-gray-500">
-            {message && <p className="text-black text-center text-sm mt-3">{message}</p>}
+            <p className="text-black text-center text-sm mt-3">One moment please...</p>
           </p>
         </div>
       </div>
@@ -282,31 +279,27 @@ function ExercisePage() {
                 </datalist>
               </div>
               {showTooltip && (
-                 <div
-                 className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-                 id="my-modal"
-               >
-                             <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
-                   <div className="mt-3">
-                     
-                     <div className="mt-2 px-7 py-3">
-                       <p className="text-sm text-gray-500">
-                       <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don&apos;t hesitate to track it by clicking the Track button.</p>
-                       </p>
-                     </div>
-                     <div className="items-center px-4 py-3">
-                       <button
-                         onClick={() => setShowTooltip(false)}
-                         className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       >
-                         Close
-                       </button>
-                     </div>
-                   </div>
-                 </div>
-                 </div>
-                
-              )}
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full" id="my-modal">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white">
+      <div className="mt-3">
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don&apos;t hesitate to track it by clicking the Track button.</p>
+          </p>
+        </div>
+        <div className="items-center px-4 py-3">
+          <button
+            onClick={() => setShowTooltip(false)}
+            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
               <input
                 type="number"
                 value={duration}
@@ -316,31 +309,27 @@ function ExercisePage() {
                 placeholder="Duration in minutes"
                 required
               />
-             {errorState && (
-              <div
-                className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-                id="my-modal"
-              >
-            <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
-                  <div className="mt-3">
-                    
-                    <div className="mt-2 px-7 py-3">
-                      <p className="text-sm text-gray-500">
-                      {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
-                      </p>
-                    </div>
-                    <div className="items-center px-4 py-3">
-                      <button
-                        onClick={() => setErrorState(false)}
-                        className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                </div>
-            )}
+              {errorState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
+      <div className="mt-3">
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
+          </p>
+        </div>
+        <div className="items-center px-4 py-3">
+          <button
+            onClick={() => setErrorState(false)}
+            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
               <button
                 type="submit"
                 onClick={trackExercise}
