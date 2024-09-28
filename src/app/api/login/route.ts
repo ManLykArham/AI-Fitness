@@ -58,32 +58,34 @@ export async function POST(request: Request) {
 
     const userId = user._id.toString(); // Converting MongoDB ObjectId to string
     const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
-      expiresIn: "2h",
+      expiresIn: "30m",
     });
+    console.log(token)
 
-    cookies().set({
-      name: "userID",
-      value: userId,
-      httpOnly: true,
-      path: "/",
-    });
-
-    // const cookie = serialize("token", token, {
+    // cookies().set({
+    //   name: "userID",
+    //   value: userId,
     //   httpOnly: true,
-    //   secure: process.env.NODE_ENV !== "development",
-    //   sameSite: "strict",
     //   path: "/",
-    //   maxAge: 7200, // 2 hours
     // });
 
-    // console.log(cookie);
+    const cookie = serialize("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 1800, // 30 mins
+    });
+
+    console.log(cookie);
 
     return new Response(
-      JSON.stringify({ message: "Login successful", userId }),
+      JSON.stringify({ message: "Login successful" }),
       {
         status: 200,
         headers: {
           "Content-Type": "application/json",
+          "Set-Cookie": cookie,
         },
       },
     );

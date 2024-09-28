@@ -147,12 +147,9 @@ function RegisterPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-blue-500">
-                  {loadingState && (
-  <div
-    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    id="my-modal"
-  >
-    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+      {loadingState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
       <div className="mt-3">
         <div className="mt-2 px-7 py-3">
           <p className="text-sm text-gray-500">
@@ -167,8 +164,8 @@ function RegisterPage() {
   </div>
 )}
 {showTerms && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-    <div className="relative top-36 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white">
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white">
       <div className="mt-3">
         <h2 className="text-lg font-bold mb-4">Terms and Conditions</h2>
         <div className="text-sm text-left space-y-4 h-60 overflow-y-auto">
@@ -214,32 +211,30 @@ function RegisterPage() {
 )}
 
 
-      {errorState && (
-              <div
-                className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-                id="my-modal"
-              >
-            <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
-                  <div className="mt-3">
-                    
-                    <div className="mt-2 px-7 py-3">
-                      <p className="text-sm text-gray-500">
-                      {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
-                      </p>
-                    </div>
-                    <div className="items-center px-4 py-3">
-                      <button
-                        onClick={() => setErrorState(false)}
-                        className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                </div>
-            )}
-      <div className="sm:w-1/2 md:w-full max-w-md p-8 space-y-3 rounded-lg bg-white shadow-lg text-center">
+
+{errorState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
+      <div className="mt-3">
+        <div className="mt-2 px-7 py-3">
+          <p className="text-sm text-gray-500">
+            {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
+          </p>
+        </div>
+        <div className="items-center px-4 py-3">
+          <button
+            onClick={() => setErrorState(false)}
+            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+      <div className="sm:w-1/2 md:w-full max-w-md p-8 space-y-3 rounded-lg bg-white shadow-lg text-center mx-5 my-5 fade-in">
         <h1 className="text-2xl font-bold text-gray-800">Register</h1>
         <form className="space-y-6" onSubmit={handleSubmit}>
           {currentStep === 1 ? (

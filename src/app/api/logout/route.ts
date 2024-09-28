@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const cookie: any = cookies().get("userID");
+    const cookie: any = cookies().get("token");
     if (!cookie) {
       return new Response(
         JSON.stringify({ error: "Authentication required" }),

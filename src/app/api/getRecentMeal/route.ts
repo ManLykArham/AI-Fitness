@@ -1,7 +1,8 @@
 // pages/api/getRecentMeals.ts
 import { connectToDatabase } from "@/app/lib/dbConnection";
-import { ObjectId } from "mongodb";
 import { cookies } from "next/headers"; // If using outside of Next.js, this will differ
+import jwt from "jsonwebtoken";
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -13,11 +14,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Extract user ID from cookies; method depends on server setup
-    const cookie: any = cookies().get("userID"); // Adjust according to actual cookie parsing method
-    const userID = cookie ? cookie.value : null;
+    // Extract the token from the cookies
+    const cookie = cookies().get("token");
+    const token = cookie ? cookie.value : null;
 
-    if (!userID) {
+    if (!token) {
       return new Response(
         JSON.stringify({ error: "Authentication required" }),
         {
@@ -27,6 +28,20 @@ export async function GET(request: Request) {
       );
     }
 
+    // Verify and decode the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const userID = (decoded as any).userId;
+
+    if (!userID) {
+      return new Response(
+        JSON.stringify({ error: "Invalid token" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+console.log(userID);
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
     const collection = db.collection("foods");
@@ -63,8 +78,7 @@ export async function GET(request: Request) {
       (acc, meal) => acc + meal.calories,
       0,
     );
-    console.log("recent meals: " + recentMeals);
-    console.log("total cal: " + totalCalories);
+
     return new Response(JSON.stringify({ recentMeals, totalCalories }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

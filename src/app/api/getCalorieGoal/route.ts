@@ -1,6 +1,8 @@
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers";
 import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -12,19 +14,33 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Extracting the user ID from the cookies
-    const cookie: any = cookies().get("userID");
-    const userID = cookie.value;
+   // Extract the token from the cookies
+   const cookie = cookies().get("token");
+   const token = cookie ? cookie.value : null;
 
-    if (!userID) {
-      return new Response(
-        JSON.stringify({ error: "Authentication required" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
+   if (!token) {
+     return new Response(
+       JSON.stringify({ error: "Authentication required" }),
+       {
+         status: 401,
+         headers: { "Content-Type": "application/json" },
+       },
+     );
+   }
+
+   // Verify and decode the JWT token
+   const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+   const userID = (decoded as any).userId;
+
+   if (!userID) {
+     return new Response(
+       JSON.stringify({ error: "Invalid token" }),
+       {
+         status: 401,
+         headers: { "Content-Type": "application/json" },
+       },
+     );
+   }
 
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");

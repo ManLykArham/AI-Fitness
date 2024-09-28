@@ -2,6 +2,8 @@ import { MongoClient } from "mongodb";
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import bcrypt from "bcryptjs";
 import { Db } from "mongodb";
+import jwt from "jsonwebtoken";
+import { serialize } from "cookie";
 import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
@@ -52,19 +54,34 @@ export async function POST(request: Request) {
     const result = await db.collection("users").insertOne(newUser);
     const userId = result.insertedId.toString();
 
-    cookies().set({
-      name: "userID",
-      value: userId,
-      httpOnly: true,
-      path: "/",
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+      expiresIn: "30m",
     });
+    console.log(token)
+
+    // cookies().set({
+    //   name: "userID",
+    //   value: userId,
+    //   httpOnly: true,
+    //   path: "/",
+    // });
+
+    const cookie = serialize("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 1800, // 30 mins
+    });
+
     // Send the response with the token and user ID
     return new Response(
-      JSON.stringify({ message: "Signup successful", userId }),
+      JSON.stringify({ message: "Signup successful"}),
       {
         status: 200,
         headers: {
           "Content-Type": "application/json",
+          "Set-Cookie": cookie,
         },
       },
     );

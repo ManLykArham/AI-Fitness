@@ -1,14 +1,15 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 
 interface IMessage {
   id: string;
-  role: 'user' | 'ai';
+  role: 'user' | 'ai' | 'system';
   content: string;
+  isInitial?: boolean;
 }
 
 interface IExercise {
   activity: string;
-  duration: string; // Assuming duration is a string, convert if necessary
+  duration: string; 
   caloriesBurned: number;
   timestamp: Date;
 }
@@ -22,33 +23,44 @@ interface IMeal {
   timestamp: Date;
 }
 
-
 function useChat() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [input, setInput] = useState('');
 
-  const addMessage = (role: 'user' | 'ai', content: string) => {
-    setMessages(prev => [...prev, { id: `msg_${prev.length}`, role, content }]);
+  const addMessage = (role: 'user' | 'ai' | 'system', content: string, isInitial: boolean = false) => {
+    setMessages(prev => [...prev, { id: `msg_${prev.length}`, role, content, isInitial }]);
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value);
 
-  return { messages, input, addMessage, handleInputChange, setInput };
+  return { messages, input, addMessage, handleInputChange, setInput, setMessages };
 }
 
 function ChatBotPage() {
-  const { messages, input, addMessage, handleInputChange, setInput } = useChat();
+  const { messages, input, addMessage, handleInputChange, setInput, setMessages } = useChat();
   const [loading, setLoading] = useState(false);
-  const [chatMode, setChatMode] = useState(''); // Keep empty initially
+  const [chatMode, setChatMode] = useState(''); 
   const [showChat, setShowChat] = useState(false);
+  const [initialMessageShown, setInitialMessageShown] = useState(false);
   const [userHasSentMessage, setUserHasSentMessage] = useState(false);
   const [threadID, setThreadID] = useState('');
   const [userHasSentMessagePer, setUserHasSentMessagePer] = useState(false);
   const [threadIDPer, setThreadIDPer] = useState('');
 
+  useEffect(() => {
+    if (showChat && !initialMessageShown) {
+      const initialMessage = chatMode === 'personalized'
+        ? 'I am an AI-driven chatbot that has been trained to be your fitness coach. I also use your data to provide personalized responses.'
+        : 'I am an AI-driven chatbot that has been trained to be your fitness coach.';
+      addMessage('system', initialMessage, true);
+      setInitialMessageShown(true);
+    }
+  }, [showChat, chatMode, initialMessageShown, addMessage]);
+  
+
   const handleChatSelection = (mode: 'generic' | 'personalized') => {
     setChatMode(mode);
-    setShowChat(true); // This will display the chat interface
+    setShowChat(true); 
   };
 
   const formatActivities = (exercises: IExercise[], meals: IMeal[]) => {
@@ -63,8 +75,6 @@ function ChatBotPage() {
     return { exerciseSummary, mealSummary };
   };
   
-  
-
   const getUserDetails = async () => {
     try {
       const response = await fetch("/api/userDetails", {
@@ -97,14 +107,14 @@ function ChatBotPage() {
       console.error("Error fetching user details:", error);
     }
   };
-  
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const userDetails = await getUserDetails();
     setLoading(true);
-    setInput('');
+    const userDetails = await getUserDetails();
     addMessage('user', input);
+    addMessage('system', 'One moment please...'); 
+    setInput('');
 
     const endpoint = chatMode === 'personalized' ? '/api/initializeChat' : '/api/chat';
 
@@ -118,6 +128,7 @@ function ChatBotPage() {
         throw new Error("Failed to set calorie goal");
       }
       const { chatbotResponse, assistantThreadID, assistantThreadIDPer } = await response.json();
+      setMessages(prev => prev.filter(msg => msg.content !== 'One moment please...')); 
       addMessage('ai', chatbotResponse || "No response from AI.");
       setUserHasSentMessage(true);
       setUserHasSentMessagePer(true);
@@ -125,6 +136,7 @@ function ChatBotPage() {
       setThreadIDPer(assistantThreadIDPer);
     } catch (error) {
       console.error('Failed to communicate with the chatbot:', error);
+      setMessages(prev => prev.filter(msg => msg.content !== 'One moment please...')); 
       addMessage('ai', 'Failed to fetch response.');
     } finally {
       setInput('');
@@ -134,35 +146,37 @@ function ChatBotPage() {
 
   return (
     <main className="w-full min-h-screen bg-blue-200 p-4">
-      <div className="p-4 md:ml-64">
+      <div className="p-4 md:ml-64 fade-in">
         <div className="sm:mt-12 bg-white border rounded-lg flex flex-col h-[85vh] justify-between max-w-4xl mx-auto">
           {!showChat ? (
-            <div className="flex justify-center items-center space-x-4 h-[95vh]">
-              <button onClick={() => handleChatSelection('generic')} className="bg-white text-black p-2 m-3 rounded border-2 border-zinc-700 hover:bg-blue-300 hover:font-bold hover:border-blue-700">Generic Chatbot</button>
+            <div className="flex justify-center items-center space-x-4 h-[95vh] mx-5">
+              <button onClick={() => handleChatSelection('generic')} className=" bg-white text-black p-2 m-3 rounded border-2 border-zinc-700 hover:bg-blue-300 hover:font-bold hover:border-blue-700">Generic Chatbot</button>
               <button onClick={() => handleChatSelection('personalized')} className="bg-blue-500 text-white p-2 m-3 rounded border-2 border-zinc-700 hover:bg-white hover:text-black hover:font-bold hover:border-blue-700">Personalized Chatbot</button>
             </div>
           ) : (
-            <div className="bg-white border rounded-lg flex flex-col h-[95vh] justify-between">
+            <div className="bg-white shadow-2xl rounded-lg flex flex-col h-[85vh] justify-between fade-in">
               <div className="overflow-y-auto p-4 space-y-2">
                 {messages.map(m => (
-                  <div key={m.id} className={`p-2 rounded ${m.role === 'user' ? 'bg-blue-400 text-white' : 'bg-blue-700 text-blue-200'}`}>
-                    {m.content}
+                  <div key={m.id} className={`p-2 rounded ${m.role === 'user' ? 'bg-blue-200 text-black' : m.role === 'ai' ? 'bg-blue-600 text-white' : m.isInitial ? 'bg-green-200 text-green-700 font-semibold' : 'bg-yellow-200 text-yellow-700'}`}>
+                    {m.content.split('\n').map((line, index) => (
+                      <p key={index} className="mb-1">{line}</p>
+                    ))}
                   </div>
                 ))}
               </div>
               <div>
-              <form onSubmit={handleSubmit} className="p-4 flex flex-row">
-                <input
-                  className="p-2 border border-blue-600 rounded focus:outline-none w-3/4 text-lg"
-                  value={input}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                  placeholder="Ask me anything"
-                />
-                <button type="submit" className="ml-5 bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled={loading || input.trim() === ''}>
-                  Send
-                </button>
-              </form>
+                <form onSubmit={handleSubmit} className="p-4 flex flex-row justify-center">
+                  <input
+                    className="p-2 border border-blue-600 rounded focus:outline-none w-3/4 text-lg"
+                    value={input}
+                    onChange={handleInputChange}
+                    disabled={loading}
+                    placeholder="Ask me anything"
+                  />
+                  <button type="submit" className="ml-5 bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled={loading || input.trim() === ''}>
+                    Send
+                  </button>
+                </form>
               </div>
             </div>
           )}
@@ -170,7 +184,6 @@ function ChatBotPage() {
       </div>
     </main>
   );
-  
 }
 
 export default ChatBotPage;

@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   
   try {
     // Create a personalized prompt using user details
-    let prompt = `Here's a user with specific needs:\n` +
+    //let prompt = `Here's a user with specific needs:\n` +
                  `Name: ${userDetails.name}, Surname: ${userDetails.surname}, Weight: ${userDetails.weight}, ` +
                  `Height: ${userDetails.height}, Goal: ${userDetails.goal}, Calorie Goal: ${userDetails.calorieGoal}. ` +
                  `Past week's meals and exercises have also been considered.\n\n` +
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
     let prompt2 = `Here's a user with specific needs:\nName: ${userDetails.name}, Surname: ${userDetails.surname}, Weight: ${userDetails.weight}, Height: ${userDetails.height}, Goal: ${userDetails.goal}, Calorie Goal: ${userDetails.calorieGoal}. \nRecent activities include: ${userDetails.exerciseSummary}. \nRecent meals include: ${userDetails.mealSummary}.\n\n${userChatbotMessage}`;
 
-    let prompt3 = `Here's a user with specific needs:\nName: ${userDetails.name}, Surname: ${userDetails.surname}, Weight: ${userDetails.weight}, Height: ${userDetails.height}, Goal: ${userDetails.goal}, Calorie Goal: ${userDetails.calorieGoal}. \nRecent activities include: ${userDetails.exerciseSummary}. \nRecent meals include: ${userDetails.mealSummary}.`;
+    //let prompt3 = `Here's a user with specific needs:\nName: ${userDetails.name}, Surname: ${userDetails.surname}, Weight: ${userDetails.weight}, Height: ${userDetails.height}, Goal: ${userDetails.goal}, Calorie Goal: ${userDetails.calorieGoal}. \nRecent activities include: ${userDetails.exerciseSummary}. \nRecent meals include: ${userDetails.mealSummary}.`;
 
     console.log("created thread");
     console.log(assistantThreadID);

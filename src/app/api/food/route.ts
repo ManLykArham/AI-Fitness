@@ -1,7 +1,6 @@
 // pages/api/exercise/route.ts
 import { connectToDatabase } from "@/app/lib/dbConnection";
 import jwt from "jsonwebtoken";
-import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -12,23 +11,33 @@ export async function POST(req: Request) {
     });
   }
 
-  const token: any = cookies().get("userID");
   const { name, mealName, mealType } = await req.json();
-  console.log(req.body);
-  console.log("In the API init:" + name);
+  // Extract the token from the cookies
+  const cookie = cookies().get("token");
+  const token = cookie ? cookie.value : null;
 
-  //const cookies = parseCookies(req as Request);
-  //const token = cookies.token;
-  console.log(token);
-  const userID = token.value;
-  console.log(userID);
-
-  // Authentication required error
   if (!token) {
-    return new Response(JSON.stringify({ error: "Authentication required" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: "Authentication required" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  // Verify and decode the JWT token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+  const userID = (decoded as any).userId;
+
+  if (!userID) {
+    return new Response(
+      JSON.stringify({ error: "Invalid token" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
 
   // Bad request error for missing data
@@ -78,20 +87,23 @@ export async function POST(req: Request) {
     let totalFiber = 0;
     let totalSugar = 0;
 
+    // Loops through each food item, ensures that each value is a number; if it's undefined or not a number, defaults to 0 to prevent errors.
     for (let i = 0; i < data.length; i++) {
       const food = data[i];
-      totalCal += food.calories;
-      totalServ += food.serving_size_g;
-      totalFat += food.fat_total_g;
-      totalFatSat += food.fat_saturated_g;
-      totalProtein += food.protein_g;
-      totalSodium += food.sodium_mg;
-      totalPotassium += food.potassium_mg;
-      totalCholesterol += food.cholesterol_mg;
-      totalCarbohydrates += food.carbohydrates_total_g;
-      totalFiber += food.fiber_g;
-      totalSugar += food.sugar_g;
+      
+      totalCal += isNaN(parseFloat(food.calories)) ? 0 : parseFloat(food.calories);
+      totalServ += isNaN(parseFloat(food.serving_size_g)) ? 0 : parseFloat(food.serving_size_g);
+      totalFat += isNaN(parseFloat(food.fat_total_g)) ? 0 : parseFloat(food.fat_total_g);
+      totalFatSat += isNaN(parseFloat(food.fat_saturated_g)) ? 0 : parseFloat(food.fat_saturated_g);
+      totalProtein += isNaN(parseFloat(food.protein_g)) ? 0 : parseFloat(food.protein_g);
+      totalSodium += isNaN(parseFloat(food.sodium_mg)) ? 0 : parseFloat(food.sodium_mg);
+      totalPotassium += isNaN(parseFloat(food.potassium_mg)) ? 0 : parseFloat(food.potassium_mg);
+      totalCholesterol += isNaN(parseFloat(food.cholesterol_mg)) ? 0 : parseFloat(food.cholesterol_mg);
+      totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g)) ? 0 : parseFloat(food.carbohydrates_total_g);
+      totalFiber += isNaN(parseFloat(food.fiber_g)) ? 0 : parseFloat(food.fiber_g);
+      totalSugar += isNaN(parseFloat(food.sugar_g)) ? 0 : parseFloat(food.sugar_g);
     }
+
 
     const foodData = {
       userID,

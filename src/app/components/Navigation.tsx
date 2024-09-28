@@ -61,19 +61,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
   return (
     
     <div className="relative">
-            {loadingState && (
-  <div
-    className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    id="my-modal"
-  >
-    <div className="relative top-52 mx-auto p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+                  {loadingState && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
       <div className="mt-3">
         <div className="mt-2 px-7 py-3">
           <p className="text-sm text-gray-500">
-            {loadingMessage && <p className="text-zinc-900 text-center font-bold text-lg">{loadingMessage}</p>}
+            {loadingMessage && <p className="text-green-500 text-center font-bold text-lg">{loadingMessage}</p>}
           </p>
           <p className="text-sm text-gray-500">
-            {message && <p className="text-black text-center text-sm mt-3">{message}</p>}
+            <p className="text-black text-center text-sm mt-3">One moment please...</p>
           </p>
         </div>
       </div>

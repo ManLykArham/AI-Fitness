@@ -181,7 +181,7 @@ function SettingPage() {
 
   return (
     <main className="w-full min-h-screen bg-blue-200">
-            <div className="p-4 md:ml-64">
+            <div className="p-4 md:ml-64 fade-in">
       <div className="p-4 bg-blue-200 max-w-4xl mx-auto">
         <div className="p-4">
           <div className="bg-white p-6 border-2 border-gray-700 rounded-lg dark:bg-white dark:border-gray-700">
@@ -189,11 +189,8 @@ function SettingPage() {
               Settings
             </h1>
             {errorState && (
-              <div
-                className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-                id="my-modal"
-              >
-            <div className="relative top-52 mx-auto p-5 border w-80 shadow-lg rounded-md bg-white">
+              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+              <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
                   <div className="mt-3">
                     
                     <div className="mt-2 px-7 py-3">
