@@ -91,17 +91,17 @@ export async function POST(req: Request) {
     for (let i = 0; i < data.length; i++) {
       const food = data[i];
       
-      totalCal += isNaN(parseFloat(food.calories)) ? 0 : parseFloat(food.calories);
-      totalServ += isNaN(parseFloat(food.serving_size_g)) ? 0 : parseFloat(food.serving_size_g);
-      totalFat += isNaN(parseFloat(food.fat_total_g)) ? 0 : parseFloat(food.fat_total_g);
-      totalFatSat += isNaN(parseFloat(food.fat_saturated_g)) ? 0 : parseFloat(food.fat_saturated_g);
-      totalProtein += isNaN(parseFloat(food.protein_g)) ? 0 : parseFloat(food.protein_g);
-      totalSodium += isNaN(parseFloat(food.sodium_mg)) ? 0 : parseFloat(food.sodium_mg);
-      totalPotassium += isNaN(parseFloat(food.potassium_mg)) ? 0 : parseFloat(food.potassium_mg);
-      totalCholesterol += isNaN(parseFloat(food.cholesterol_mg)) ? 0 : parseFloat(food.cholesterol_mg);
-      totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g)) ? 0 : parseFloat(food.carbohydrates_total_g);
-      totalFiber += isNaN(parseFloat(food.fiber_g)) ? 0 : parseFloat(food.fiber_g);
-      totalSugar += isNaN(parseFloat(food.sugar_g)) ? 0 : parseFloat(food.sugar_g);
+      totalCal += isNaN(parseFloat(food.calories)) ? "N/A" : parseFloat(food.calories);
+      totalServ += isNaN(parseFloat(food.serving_size_g)) ? "N/A" : parseFloat(food.serving_size_g);
+      totalFat += isNaN(parseFloat(food.fat_total_g)) ? "N/A" : parseFloat(food.fat_total_g);
+      totalFatSat += isNaN(parseFloat(food.fat_saturated_g)) ? "N/A" : parseFloat(food.fat_saturated_g);
+      totalProtein += isNaN(parseFloat(food.protein_g)) ? "N/A" : parseFloat(food.protein_g);
+      totalSodium += isNaN(parseFloat(food.sodium_mg)) ? "N/A" : parseFloat(food.sodium_mg);
+      totalPotassium += isNaN(parseFloat(food.potassium_mg)) ? "N/A" : parseFloat(food.potassium_mg);
+      totalCholesterol += isNaN(parseFloat(food.cholesterol_mg)) ? "N/A" : parseFloat(food.cholesterol_mg);
+      totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g)) ? "N/A" : parseFloat(food.carbohydrates_total_g);
+      totalFiber += isNaN(parseFloat(food.fiber_g)) ? "N/A" : parseFloat(food.fiber_g);
+      totalSugar += isNaN(parseFloat(food.sugar_g)) ? "N/A" : parseFloat(food.sugar_g);
     }
 
 
