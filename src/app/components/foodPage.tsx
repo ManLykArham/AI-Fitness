@@ -643,20 +643,20 @@ function FoodPage() {
                         {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
                       </h1>
                       <div className="bg-blue-100 p-2 border rounded-lg">
-                        <p>Calories: {entry.calories + " kcal" || "N/A"}</p>
-                        <p>Serving Size: {entry.serving_size_g || "N/A"}g</p>
-                        <p>
-                          Fat: {entry.fat_total_g || "N/A"}g (Saturated:{" "}
-                          {entry.fat_saturated_g || "N/A"}g)
-                        </p>
-                        <p>Protein: {entry.protein_g || "N/A"}g</p>
-                        <p>Sodium: {entry.sodium_mg || "N/A"}mg</p>
-                        <p>Potassium: {entry.potassium_mg || "N/A"}mg</p>
-                        <p>Cholesterol: {entry.cholesterol_mg || "N/A"}mg</p>
-                        <p>
-                          Carbohydrates: {entry.carbohydrates_total_g || "N/A"}g (Fiber:{" "}
-                          {entry.fiber_g || 0}g, Sugar: {entry.sugar_g || "N/A"}g)
-                        </p>
+                        <p>Calories: {entry.calories && entry.calories !== "N/A" ? `${entry.calories} kcal` : "N/A"}</p>
+  <p>Serving Size: {entry.serving_size_g && entry.serving_size_g !== "N/A" ? `${entry.serving_size_g}g` : "N/A"}</p>
+  <p>
+    Fat: {entry.fat_total_g && entry.fat_total_g !== "N/A" ? `${entry.fat_total_g}g` : "N/A"} 
+    (Saturated: {entry.fat_saturated_g && entry.fat_saturated_g !== "N/A" ? `${entry.fat_saturated_g}g` : "N/A"})
+  </p>
+  <p>Protein: {entry.protein_g && entry.protein_g !== "N/A" ? `${entry.protein_g}g` : "N/A"}</p>
+  <p>Sodium: {entry.sodium_mg && entry.sodium_mg !== "N/A" ? `${entry.sodium_mg}mg` : "N/A"}</p>
+  <p>Potassium: {entry.potassium_mg && entry.potassium_mg !== "N/A" ? `${entry.potassium_mg}mg` : "N/A"}</p>
+  <p>Cholesterol: {entry.cholesterol_mg && entry.cholesterol_mg !== "N/A" ? `${entry.cholesterol_mg}mg` : "N/A"}</p>
+  <p>
+    Carbohydrates: {entry.carbohydrates_total_g && entry.carbohydrates_total_g !== "N/A" ? `${entry.carbohydrates_total_g}g` : "N/A"} 
+    (Fiber: {entry.fiber_g && entry.fiber_g !== "N/A" ? `${entry.fiber_g}g` : "N/A"}, Sugar: {entry.sugar_g && entry.sugar_g !== "N/A" ? `${entry.sugar_g}g` : "N/A"})
+  </p>
                         <button
                           onClick={() => deleteFoodEntry(entry.id)}
                           className="px-4 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700"
