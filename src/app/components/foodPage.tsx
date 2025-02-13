@@ -643,7 +643,7 @@ function FoodPage() {
                         {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
                       </h1>
                       <div className="bg-blue-100 p-2 border rounded-lg">
-                        <p>Calories: {entry.calories || "N/A"} kcal</p>
+                        <p>Calories: {entry.calories + " kcal" || "N/A"}</p>
                         <p>Serving Size: {entry.serving_size_g || "N/A"}g</p>
                         <p>
                           Fat: {entry.fat_total_g || "N/A"}g (Saturated:{" "}
