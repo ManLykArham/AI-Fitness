@@ -643,19 +643,19 @@ function FoodPage() {
                         {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
                       </h1>
                       <div className="bg-blue-100 p-2 border rounded-lg">
-                        <p>Calories: {entry.calories} kcal</p>
-                        <p>Serving Size: {entry.serving_size_g || 0}g</p>
+                        <p>Calories: {entry.calories || "N/A"} kcal</p>
+                        <p>Serving Size: {entry.serving_size_g || "N/A"}g</p>
                         <p>
-                          Fat: {entry.fat_total_g || 0}g (Saturated:{" "}
-                          {entry.fat_saturated_g || 0}g)
+                          Fat: {entry.fat_total_g || "N/A"}g (Saturated:{" "}
+                          {entry.fat_saturated_g || "N/A"}g)
                         </p>
-                        <p>Protein: {entry.protein_g || 0}g</p>
-                        <p>Sodium: {entry.sodium_mg || 0}mg</p>
-                        <p>Potassium: {entry.potassium_mg || 0}mg</p>
-                        <p>Cholesterol: {entry.cholesterol_mg || 0}mg</p>
+                        <p>Protein: {entry.protein_g || "N/A"}g</p>
+                        <p>Sodium: {entry.sodium_mg || "N/A"}mg</p>
+                        <p>Potassium: {entry.potassium_mg || "N/A"}mg</p>
+                        <p>Cholesterol: {entry.cholesterol_mg || "N/A"}mg</p>
                         <p>
-                          Carbohydrates: {entry.carbohydrates_total_g || 0}g (Fiber:{" "}
-                          {entry.fiber_g || 0}g, Sugar: {entry.sugar_g || 0}g)
+                          Carbohydrates: {entry.carbohydrates_total_g || "N/A"}g (Fiber:{" "}
+                          {entry.fiber_g || 0}g, Sugar: {entry.sugar_g || "N/A"}g)
                         </p>
                         <button
                           onClick={() => deleteFoodEntry(entry.id)}
