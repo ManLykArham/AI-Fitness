@@ -643,19 +643,19 @@ function FoodPage() {
                         {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
                       </h1>
                       <div className="bg-blue-100 p-2 border rounded-lg">
-                        <p>Calories: {entry.calories && entry.calories !== "N/A" ? `${entry.calories} kcal` : "N/A"}</p>
-  <p>Serving Size: {entry.serving_size_g && entry.serving_size_g !== "N/A" ? `${entry.serving_size_g}g` : "N/A"}</p>
+                      <p>Calories: {typeof entry.calories === "number" ? `${entry.calories} kcal` : "N/A"}</p>
+  <p>Serving Size: {typeof entry.serving_size_g === "number" ? `${entry.serving_size_g}g` : "N/A"}</p>
   <p>
-    Fat: {entry.fat_total_g && entry.fat_total_g !== "N/A" ? `${entry.fat_total_g}g` : "N/A"} 
-    (Saturated: {entry.fat_saturated_g && entry.fat_saturated_g !== "N/A" ? `${entry.fat_saturated_g}g` : "N/A"})
+    Fat: {typeof entry.fat_total_g === "number" ? `${entry.fat_total_g}g` : "N/A"} 
+    (Saturated: {typeof entry.fat_saturated_g === "number" ? `${entry.fat_saturated_g}g` : "N/A"})
   </p>
-  <p>Protein: {entry.protein_g && entry.protein_g !== "N/A" ? `${entry.protein_g}g` : "N/A"}</p>
-  <p>Sodium: {entry.sodium_mg && entry.sodium_mg !== "N/A" ? `${entry.sodium_mg}mg` : "N/A"}</p>
-  <p>Potassium: {entry.potassium_mg && entry.potassium_mg !== "N/A" ? `${entry.potassium_mg}mg` : "N/A"}</p>
-  <p>Cholesterol: {entry.cholesterol_mg && entry.cholesterol_mg !== "N/A" ? `${entry.cholesterol_mg}mg` : "N/A"}</p>
+  <p>Protein: {typeof entry.protein_g === "number" ? `${entry.protein_g}g` : "N/A"}</p>
+  <p>Sodium: {typeof entry.sodium_mg === "number" ? `${entry.sodium_mg}mg` : "N/A"}</p>
+  <p>Potassium: {typeof entry.potassium_mg === "number" ? `${entry.potassium_mg}mg` : "N/A"}</p>
+  <p>Cholesterol: {typeof entry.cholesterol_mg === "number" ? `${entry.cholesterol_mg}mg` : "N/A"}</p>
   <p>
-    Carbohydrates: {entry.carbohydrates_total_g && entry.carbohydrates_total_g !== "N/A" ? `${entry.carbohydrates_total_g}g` : "N/A"} 
-    (Fiber: {entry.fiber_g && entry.fiber_g !== "N/A" ? `${entry.fiber_g}g` : "N/A"}, Sugar: {entry.sugar_g && entry.sugar_g !== "N/A" ? `${entry.sugar_g}g` : "N/A"})
+    Carbohydrates: {typeof entry.carbohydrates_total_g === "number" ? `${entry.carbohydrates_total_g}g` : "N/A"} 
+    (Fiber: {typeof entry.fiber_g === "number" ? `${entry.fiber_g}g` : "N/A"}, Sugar: {typeof entry.sugar_g === "number" ? `${entry.sugar_g}g` : "N/A"})
   </p>
                         <button
                           onClick={() => deleteFoodEntry(entry.id)}
