@@ -2,7 +2,7 @@
 
 ## 🚀 Project Overview and Learning Outcomes
 
-**AI Fitness** is the sequel to my [**Calorie Counter Web App**](https://ai-fitness-five.vercel.app/) with numerous exciting improvements! This app leverages **NextJS**, **TypeScript**, and **Tailwind CSS** to create a modern, user-friendly fitness tracking application. A standout feature is the AI chatbot, which is integrated with **OpenAI's Assistant API** and is trained on user-specific data, such as their weekly eating habits and workout routines. This allows the chatbot to deliver personalised fitness and nutrition advice based on users’ real activities.
+[**AI Fitness**](https://ai-fitness-five.vercel.app/) is the sequel to my **Calorie Counter Web App** with numerous exciting improvements! This app leverages **NextJS**, **TypeScript**, and **Tailwind CSS** to create a modern, user-friendly fitness tracking application. A standout feature is the AI chatbot, which is integrated with **OpenAI's Assistant API** and is trained on user-specific data, such as their weekly eating habits and workout routines. This allows the chatbot to deliver personalised fitness and nutrition advice based on users’ real activities.
 
 ### Current Status Update:
 
