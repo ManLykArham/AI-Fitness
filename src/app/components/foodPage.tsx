@@ -376,17 +376,17 @@ function FoodPage() {
             id: item.id,
             mealType: item.mealType || "N/A", // Default to "N/A" if undefined
             name: item.name || "Unnamed Meal", // Provide a default name
-            calories: item.calories || "N/A", // Default to 0 if undefined
-            servingSizeG: item.servingSizeG || "N/A",
-            fatTotalG: item.fatTotalG || "N/A",
-            fatSaturatedG: item.fatSaturatedG || "N/A",
-            proteinG: item.proteinG || "N/A",
-            sodiumMg: item.sodiumMg || "N/A",
-            potassiumMg: item.potassiumMg || "N/A",
-            cholesterolMg: item.cholesterolMg || "N/A",
-            carbohydratesTotalG: item.carbohydratesTotalG || "N/A",
-            fiberG: item.fiberG || "N/A",
-            sugarG: item.sugarG || "N/A",
+            calories: item.calories || 0, // Default to 0 if undefined
+            servingSizeG: item.servingSizeG || 0,
+            fatTotalG: item.fatTotalG || 0,
+            fatSaturatedG: item.fatSaturatedG || 0,
+            proteinG: item.proteinG || 0,
+            sodiumMg: item.sodiumMg || 0,
+            potassiumMg: item.potassiumMg || 0,
+            cholesterolMg: item.cholesterolMg || 0,
+            carbohydratesTotalG: item.carbohydratesTotalG || 0,
+            fiberG: item.fiberG || 0,
+            sugarG: item.sugarG || 0,
             date: new Date(item.date).toISOString().split("T")[0], // Formatting date to YYYY-MM-DD
             showDetails: false, // Default showDetails
           }));
@@ -643,19 +643,19 @@ function FoodPage() {
                         {`${entry.mealName} - ${entry.mealType} - logged at ${entry.timestamp} on ${new Date(entry.date).toLocaleDateString("en-GB")}`}
                       </h1>
                       <div className="bg-blue-100 p-2 border rounded-lg">
-                      <p>Calories: {typeof entry.calories === "number" ? `${entry.calories} kcal` : "N/A"}</p>
-  <p>Serving Size: {typeof entry.serving_size_g === "number" ? `${entry.serving_size_g}g` : "N/A"}</p>
+                      <p>Calories: {entry.calories !== 0 ? `${entry.calories} kcal` : "N/A"}</p>
+  <p>Serving Size: {entry.serving_size_g !== 0 ? `${entry.serving_size_g}g` : "N/A"}</p>
   <p>
-    Fat: {typeof entry.fat_total_g === "number" ? `${entry.fat_total_g}g` : "N/A"} 
-    (Saturated: {typeof entry.fat_saturated_g === "number" ? `${entry.fat_saturated_g}g` : "N/A"})
+    Fat: {entry.fat_total_g !== 0 ? `${entry.fat_total_g}g` : "N/A"} 
+    (Saturated: {entry.fat_saturated_g !== 0 ? `${entry.fat_saturated_g}g` : "N/A"})
   </p>
-  <p>Protein: {typeof entry.protein_g === "number" ? `${entry.protein_g}g` : "N/A"}</p>
-  <p>Sodium: {typeof entry.sodium_mg === "number" ? `${entry.sodium_mg}mg` : "N/A"}</p>
-  <p>Potassium: {typeof entry.potassium_mg === "number" ? `${entry.potassium_mg}mg` : "N/A"}</p>
-  <p>Cholesterol: {typeof entry.cholesterol_mg === "number" ? `${entry.cholesterol_mg}mg` : "N/A"}</p>
+  <p>Protein: {entry.protein_g !== 0 ? `${entry.protein_g}g` : "N/A"}</p>
+  <p>Sodium: {entry.sodium_mg !== 0 ? `${entry.sodium_mg}mg` : "N/A"}</p>
+  <p>Potassium: {entry.potassium_mg !== 0 ? `${entry.potassium_mg}mg` : "N/A"}</p>
+  <p>Cholesterol: {entry.cholesterol_mg !== 0 ? `${entry.cholesterol_mg}mg` : "N/A"}</p>
   <p>
-    Carbohydrates: {typeof entry.carbohydrates_total_g === "number" ? `${entry.carbohydrates_total_g}g` : "N/A"} 
-    (Fiber: {typeof entry.fiber_g === "number" ? `${entry.fiber_g}g` : "N/A"}, Sugar: {typeof entry.sugar_g === "number" ? `${entry.sugar_g}g` : "N/A"})
+    Carbohydrates: {entry.carbohydrates_total_g !== 0 ? `${entry.carbohydrates_total_g}g` : "N/A"} 
+    (Fiber: {entry.fiber_g !== 0 ? `${entry.fiber_g}g` : "N/A"}, Sugar: {entry.sugar_g !== 0 ? `${entry.sugar_g}g` : "N/A"})
   </p>
                         <button
                           onClick={() => deleteFoodEntry(entry.id)}
