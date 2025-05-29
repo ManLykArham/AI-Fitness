@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
       expiresIn: "30m",
     });
-    console.log(token)
+    console.log(token);
 
     // cookies().set({
     //   name: "userID",
@@ -79,16 +79,13 @@ export async function POST(request: Request) {
 
     console.log(cookie);
 
-    return new Response(
-      JSON.stringify({ message: "Login successful" }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Set-Cookie": cookie,
-        },
+    return new Response(JSON.stringify({ message: "Login successful" }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": cookie,
       },
-    );
+    });
   } catch (error: any) {
     console.error("Login error:", error);
     return new Response(
@@ -96,7 +93,7 @@ export async function POST(request: Request) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }

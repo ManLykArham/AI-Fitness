@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         {
           status: 401,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -38,13 +38,10 @@ export async function POST(request: Request) {
     const userID = (decoded as any).userId;
 
     if (!userID) {
-      return new Response(
-        JSON.stringify({ error: "Invalid token" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const data = await request.json();
@@ -55,7 +52,7 @@ export async function POST(request: Request) {
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -78,7 +75,7 @@ export async function POST(request: Request) {
         {
           status: 403,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -89,7 +86,7 @@ export async function POST(request: Request) {
       .collection("users")
       .updateOne(
         { _id: new ObjectId(userID) },
-        { $set: { password: hashedPassword } },
+        { $set: { password: hashedPassword } }
       );
 
     return new Response(
@@ -97,7 +94,7 @@ export async function POST(request: Request) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   } catch (error: any) {
     console.error("Failed to reset password", error);

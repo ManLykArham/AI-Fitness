@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
       expiresIn: "30m",
     });
-    console.log(token)
+    console.log(token);
 
     // cookies().set({
     //   name: "userID",
@@ -75,16 +75,13 @@ export async function POST(request: Request) {
     });
 
     // Send the response with the token and user ID
-    return new Response(
-      JSON.stringify({ message: "Signup successful"}),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Set-Cookie": cookie,
-        },
+    return new Response(JSON.stringify({ message: "Signup successful" }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": cookie,
       },
-    );
+    });
   } catch (error: any) {
     console.error("Registration error:", error);
     return new Response(
@@ -92,7 +89,7 @@ export async function POST(request: Request) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }

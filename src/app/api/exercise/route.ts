@@ -16,13 +16,10 @@ export async function POST(req: Request) {
   const token = cookie ? cookie.value : null;
 
   if (!token) {
-    return new Response(
-      JSON.stringify({ error: "Authentication required" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Authentication required" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   // Verify and decode the JWT token
@@ -30,13 +27,10 @@ export async function POST(req: Request) {
   const userID = (decoded as any).userId;
 
   if (!userID) {
-    return new Response(
-      JSON.stringify({ error: "Invalid token" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Invalid token" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   // let userId;
@@ -58,7 +52,7 @@ export async function POST(req: Request) {
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 
@@ -71,7 +65,7 @@ export async function POST(req: Request) {
           "Content-Type": "application/json",
           "X-Api-Key": process.env.APININJA_API_KEY!,
         },
-      },
+      }
     );
 
     if (!apiResponse.ok) {
@@ -103,7 +97,7 @@ export async function POST(req: Request) {
           message: "Exercise logged successfully",
           data: data,
           exerciseId: insertionResult.insertedId,
-        }),
+        })
       );
     } else {
       throw new Error("Failed to insert exercise");

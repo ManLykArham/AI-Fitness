@@ -11,22 +11,22 @@ module.exports = {
     current: "currentColor",
     extend: {
       screens: {
-        'xs': '300px', // Custom extra small breakpoint
+        xs: "300px", // Custom extra small breakpoint
       },
       keyframes: {
         borderPulseWarning: {
-          '0%, 100%': { borderColor: 'red' }, 
-          '50%': { borderColor: 'white' },
+          "0%, 100%": { borderColor: "red" },
+          "50%": { borderColor: "white" },
         },
         borderPulseLoad: {
-          '0%, 100%': { borderColor: '#00B9FF' }, 
-          '50%': { borderColor: 'white' },
+          "0%, 100%": { borderColor: "#00B9FF" },
+          "50%": { borderColor: "white" },
         },
       },
-     
+
       animation: {
-        'border-pulse-warning': 'borderPulseWarning 0.75s infinite',
-        'border-pulse-load': 'borderPulseLoad 1.5s infinite',
+        "border-pulse-warning": "borderPulseWarning 0.75s infinite",
+        "border-pulse-load": "borderPulseLoad 1.5s infinite",
       },
       colors: {
         // light mode

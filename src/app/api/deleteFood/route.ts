@@ -13,10 +13,13 @@ export async function POST(request: Request) {
   try {
     data = await request.json();
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: "Invalid JSON in request body" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   const { id } = data;
@@ -51,7 +54,7 @@ export async function POST(request: Request) {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     } else {
       return new Response(JSON.stringify({ error: "Food not found" }), {
@@ -68,7 +71,7 @@ export async function POST(request: Request) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }

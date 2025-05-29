@@ -19,37 +19,34 @@ export async function POST(request: Request) {
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
-   // Extract the token from the cookies
-   const cookie = cookies().get("token");
-   const token = cookie ? cookie.value : null;
+    // Extract the token from the cookies
+    const cookie = cookies().get("token");
+    const token = cookie ? cookie.value : null;
 
-   if (!token) {
-     return new Response(
-       JSON.stringify({ error: "Authentication required" }),
-       {
-         status: 401,
-         headers: { "Content-Type": "application/json" },
-       },
-     );
-   }
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
-   // Verify and decode the JWT token
-   const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-   const userID = (decoded as any).userId;
+    // Verify and decode the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const userID = (decoded as any).userId;
 
-   if (!userID) {
-     return new Response(
-       JSON.stringify({ error: "Invalid token" }),
-       {
-         status: 401,
-         headers: { "Content-Type": "application/json" },
-       },
-     );
-   }
+    if (!userID) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
@@ -58,7 +55,7 @@ export async function POST(request: Request) {
     // Updating the calorie goal for the authenticated user
     const result = await usersCollection.updateOne(
       { _id: new ObjectId(userID) },
-      { $set: { calorieGoal: data.calorieGoal } },
+      { $set: { calorieGoal: data.calorieGoal } }
     );
 
     if (result.modifiedCount === 0) {
@@ -77,7 +74,7 @@ export async function POST(request: Request) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   } catch (error: any) {
     console.error("Failed to set calorie goal", error);
@@ -86,7 +83,7 @@ export async function POST(request: Request) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }

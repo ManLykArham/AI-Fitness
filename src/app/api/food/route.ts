@@ -17,13 +17,10 @@ export async function POST(req: Request) {
   const token = cookie ? cookie.value : null;
 
   if (!token) {
-    return new Response(
-      JSON.stringify({ error: "Authentication required" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Authentication required" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   // Verify and decode the JWT token
@@ -31,13 +28,10 @@ export async function POST(req: Request) {
   const userID = (decoded as any).userId;
 
   if (!userID) {
-    return new Response(
-      JSON.stringify({ error: "Invalid token" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Invalid token" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   // Bad request error for missing data
@@ -49,7 +43,7 @@ export async function POST(req: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   }
 
@@ -62,7 +56,7 @@ export async function POST(req: Request) {
           "Content-Type": "application/json",
           "X-Api-Key": "uqvXuwvG+dMRJNNvCK/eDw==MSB3hIFeNEbBSWx3",
         },
-      },
+      }
     );
 
     if (!apiResponse.ok) {
@@ -89,22 +83,42 @@ export async function POST(req: Request) {
 
     // Loops through each food item, ensures that each value is a number; if it's undefined or not a number, defaults to 0 to prevent errors.
     for (let i = 0; i < data.length; i++) {
-    const food = data[i];
+      const food = data[i];
 
-    totalCal += isNaN(parseFloat(food.calories)) ? 0 : parseFloat(food.calories);
-    totalServ += isNaN(parseFloat(food.serving_size_g)) ? 0 : parseFloat(food.serving_size_g);
-    totalFat += isNaN(parseFloat(food.fat_total_g)) ? 0 : parseFloat(food.fat_total_g);
-    totalFatSat += isNaN(parseFloat(food.fat_saturated_g)) ? 0 : parseFloat(food.fat_saturated_g);
-    totalProtein += isNaN(parseFloat(food.protein_g)) ? 0 : parseFloat(food.protein_g);
-    totalSodium += isNaN(parseFloat(food.sodium_mg)) ? 0 : parseFloat(food.sodium_mg);
-    totalPotassium += isNaN(parseFloat(food.potassium_mg)) ? 0 : parseFloat(food.potassium_mg);
-    totalCholesterol += isNaN(parseFloat(food.cholesterol_mg)) ? 0 : parseFloat(food.cholesterol_mg);
-    totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g)) ? 0 : parseFloat(food.carbohydrates_total_g);
-    totalFiber += isNaN(parseFloat(food.fiber_g)) ? 0 : parseFloat(food.fiber_g);
-    totalSugar += isNaN(parseFloat(food.sugar_g)) ? 0 : parseFloat(food.sugar_g);
-}
-
-
+      totalCal += isNaN(parseFloat(food.calories))
+        ? 0
+        : parseFloat(food.calories);
+      totalServ += isNaN(parseFloat(food.serving_size_g))
+        ? 0
+        : parseFloat(food.serving_size_g);
+      totalFat += isNaN(parseFloat(food.fat_total_g))
+        ? 0
+        : parseFloat(food.fat_total_g);
+      totalFatSat += isNaN(parseFloat(food.fat_saturated_g))
+        ? 0
+        : parseFloat(food.fat_saturated_g);
+      totalProtein += isNaN(parseFloat(food.protein_g))
+        ? 0
+        : parseFloat(food.protein_g);
+      totalSodium += isNaN(parseFloat(food.sodium_mg))
+        ? 0
+        : parseFloat(food.sodium_mg);
+      totalPotassium += isNaN(parseFloat(food.potassium_mg))
+        ? 0
+        : parseFloat(food.potassium_mg);
+      totalCholesterol += isNaN(parseFloat(food.cholesterol_mg))
+        ? 0
+        : parseFloat(food.cholesterol_mg);
+      totalCarbohydrates += isNaN(parseFloat(food.carbohydrates_total_g))
+        ? 0
+        : parseFloat(food.carbohydrates_total_g);
+      totalFiber += isNaN(parseFloat(food.fiber_g))
+        ? 0
+        : parseFloat(food.fiber_g);
+      totalSugar += isNaN(parseFloat(food.sugar_g))
+        ? 0
+        : parseFloat(food.sugar_g);
+    }
 
     const foodData = {
       userID,
@@ -140,7 +154,7 @@ export async function POST(req: Request) {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     } else {
       throw new Error("Failed to insert food data");

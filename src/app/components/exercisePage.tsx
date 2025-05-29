@@ -38,7 +38,7 @@ function ExercisePage() {
     "Sweat Today, Shine Tomorrow!",
     "Stretch Your Muscles, Not Your Worries!",
     "Track Your Progress, Not Just Performance!",
-    "Energize Your Body, Empower Your Mind!"
+    "Energize Your Body, Empower Your Mind!",
   ];
 
   const setRandomExerciseMessage = () => {
@@ -65,11 +65,13 @@ function ExercisePage() {
       return;
     }
 
-    const nameRegex = /^[a-zA-Z\s\-']+$/; 
+    const nameRegex = /^[a-zA-Z\s\-']+$/;
     let exercise = nameRegex.test(exerciseInput);
 
     if (exercise === false) {
-      setErrorMessage("Your exercise name should be a word, e.g., Basketball or Kick Boxing");
+      setErrorMessage(
+        "Your exercise name should be a word, e.g., Basketball or Kick Boxing"
+      );
       setErrorState(true);
       return;
     }
@@ -84,64 +86,63 @@ function ExercisePage() {
     setLoadingState(true);
 
     setTimeout(async () => {
-    try {
-      const response = await fetch("/api/exercise", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ activity: exerciseInput, duration: duration }),
-        credentials: "include", // This will include cookies with the request
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const currentDateTime = new Date();
-        const formattedDate = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, "0")}-${currentDateTime.getDate().toString().padStart(2, "0")}`;
-        const formattedTime = currentDateTime.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+      try {
+        const response = await fetch("/api/exercise", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ activity: exerciseInput, duration: duration }),
+          credentials: "include", // This will include cookies with the request
         });
 
-        // Extracts the name before the comma
-        const exerciseName = data.data[0].name.split(",")[0].trim();
-        const exerciseID = data.exerciseId;
+        const data = await response.json();
 
-        const newExercise = {
-          id: exerciseID,
-          timestamp: formattedTime,
-          date: formattedDate,
-          exerciseName: exerciseInput,
-          name: exerciseName,
-          duration: data.data[0].duration_minutes,
-          calories: data.data[0].total_calories,
-        };
+        if (response.ok) {
+          const currentDateTime = new Date();
+          const formattedDate = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, "0")}-${currentDateTime.getDate().toString().padStart(2, "0")}`;
+          const formattedTime = currentDateTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
 
-        // Update the exercises state
-        setExercises((prevEntries) => [newExercise, ...prevEntries]);
+          // Extracts the name before the comma
+          const exerciseName = data.data[0].name.split(",")[0].trim();
+          const exerciseID = data.exerciseId;
+
+          const newExercise = {
+            id: exerciseID,
+            timestamp: formattedTime,
+            date: formattedDate,
+            exerciseName: exerciseInput,
+            name: exerciseName,
+            duration: data.data[0].duration_minutes,
+            calories: data.data[0].total_calories,
+          };
+
+          // Update the exercises state
+          setExercises((prevEntries) => [newExercise, ...prevEntries]);
+          setLoadingState(false);
+          setLoadingMessage("");
+          setMessage("");
+          setExerciseInput("");
+          setDuration("");
+        } else {
+          throw new Error(data.error || "Failed to track the exercise");
+        }
+      } catch (error: any) {
+        setErrorMessage(error.message);
         setLoadingState(false);
-        setLoadingMessage("");
         setMessage("");
-        setExerciseInput("");
-        setDuration("");
-      } else {
-        throw new Error(data.error || "Failed to track the exercise");
-      }
-    }
-     catch (error: any) {
-      setErrorMessage(error.message);
-      setLoadingState(false);
-      setMessage("");
         setLoadingMessage("");
-      setErrorState(true);
-    }
-  }, 2000);
+        setErrorState(true);
+      }
+    }, 2000);
   };
 
   //Gets all the exercises
   useEffect(() => {
-    setLoadingMessage("Getting your exercises from the database :)")
+    setLoadingMessage("Getting your exercises from the database :)");
     setLoadingState(true);
     const fetchExercises = async () => {
       try {
@@ -160,7 +161,7 @@ function ExercisePage() {
               .sort(
                 (a, b) =>
                   new Date(b.timestamp).getTime() -
-                  new Date(a.timestamp).getTime(),
+                  new Date(a.timestamp).getTime()
               )
               .map((item) => ({
                 id: item._id,
@@ -173,15 +174,15 @@ function ExercisePage() {
                 name: item.activity,
                 duration: item.duration,
                 calories: item.caloriesBurned,
-              })),
+              }))
           );
           setLoadingState(false);
         } else {
           console.error("Received data is not an array:", data);
           setLoadingState(false);
-        setLoadingMessage("");
-        setErrorMessage("There was an error please try again later :)");
-        setErrorState(true);
+          setLoadingMessage("");
+          setErrorMessage("There was an error please try again later :)");
+          setErrorState(true);
         }
       } catch (error: any) {
         console.error("Error fetching exercises:", error);
@@ -193,7 +194,7 @@ function ExercisePage() {
     };
 
     fetchExercises();
-  }, [])
+  }, []);
 
   //Allows to delete the exercises
   const deleteExercise = async (id: any) => {
@@ -210,7 +211,7 @@ function ExercisePage() {
 
       if (response.ok) {
         setExercises((prevExercises) =>
-          prevExercises.filter((exercise) => exercise.id !== id),
+          prevExercises.filter((exercise) => exercise.id !== id)
         );
       } else {
         throw new Error(data.error || "Failed to delete the exercise");
@@ -230,22 +231,28 @@ function ExercisePage() {
   return (
     <main className="w-full min-h-screen bg-blue-200">
       <div className="p-4 md:ml-64 fade-in">
-      {loadingState && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
-    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
-      <div className="mt-3">
-        <div className="mt-2 px-7 py-3">
-          <p className="text-sm text-gray-500">
-            {loadingMessage && <p className="text-green-500 text-center font-bold text-lg">{loadingMessage}</p>}
-          </p>
-          <p className="text-sm text-gray-500">
-            <p className="text-black text-center text-sm mt-3">One moment please...</p>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+        {loadingState && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+            <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white animate-border-pulse-load">
+              <div className="mt-3">
+                <div className="mt-2 px-7 py-3">
+                  <p className="text-sm text-gray-500">
+                    {loadingMessage && (
+                      <p className="text-green-500 text-center font-bold text-lg">
+                        {loadingMessage}
+                      </p>
+                    )}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    <p className="text-black text-center text-sm mt-3">
+                      One moment please...
+                    </p>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mp-4 p-4 max-w-4xl mx-auto">
           <div className="p-4  bg-white shadow-lg border-white border rounded-lg dark:border-white">
             <h1 className="text-xl font-bold mb-4">Exercise</h1>
@@ -271,7 +278,7 @@ function ExercisePage() {
                 <datalist id="exercises-list">
                   {commonExercises
                     .filter((ex) =>
-                      ex.toLowerCase().includes(exerciseInput.toLowerCase()),
+                      ex.toLowerCase().includes(exerciseInput.toLowerCase())
                     )
                     .map((filteredExercise) => (
                       <option key={filteredExercise} value={filteredExercise} />
@@ -279,26 +286,34 @@ function ExercisePage() {
                 </datalist>
               </div>
               {showTooltip && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full" id="my-modal">
-    <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white">
-      <div className="mt-3">
-        <div className="mt-2 px-7 py-3">
-          <p className="text-sm text-gray-500">
-            <p className="text-black font-bold text-lg">Even if your desired exercise is not in the list, it could still be in the database. Therefore, please don&apos;t hesitate to track it by clicking the Track button.</p>
-          </p>
-        </div>
-        <div className="items-center px-4 py-3">
-          <button
-            onClick={() => setShowTooltip(false)}
-            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                <div
+                  className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full"
+                  id="my-modal"
+                >
+                  <div className="relative p-5 border-4 border-solid w-80 shadow-lg rounded-md bg-white">
+                    <div className="mt-3">
+                      <div className="mt-2 px-7 py-3">
+                        <p className="text-sm text-gray-500">
+                          <p className="text-black font-bold text-lg">
+                            Even if your desired exercise is not in the list, it
+                            could still be in the database. Therefore, please
+                            don&apos;t hesitate to track it by clicking the
+                            Track button.
+                          </p>
+                        </p>
+                      </div>
+                      <div className="items-center px-4 py-3">
+                        <button
+                          onClick={() => setShowTooltip(false)}
+                          className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <input
                 type="number"
@@ -310,26 +325,30 @@ function ExercisePage() {
                 required
               />
               {errorState && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
-    <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
-      <div className="mt-3">
-        <div className="mt-2 px-7 py-3">
-          <p className="text-sm text-gray-500">
-            {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
-          </p>
-        </div>
-        <div className="items-center px-4 py-3">
-          <button
-            onClick={() => setErrorState(false)}
-            className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto flex items-center justify-center h-full w-full">
+                  <div className="relative p-5 border w-80 shadow-lg rounded-md bg-white animate-border-pulse-warning">
+                    <div className="mt-3">
+                      <div className="mt-2 px-7 py-3">
+                        <p className="text-sm text-gray-500">
+                          {errorMessage && (
+                            <p className="text-red-500 text-lg">
+                              {errorMessage}
+                            </p>
+                          )}
+                        </p>
+                      </div>
+                      <div className="items-center px-4 py-3">
+                        <button
+                          onClick={() => setErrorState(false)}
+                          className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <button
                 type="submit"
                 onClick={trackExercise}
@@ -359,7 +378,7 @@ function ExercisePage() {
                   entry.name
                     .toLowerCase()
                     .includes(exerciseNameFilter.toLowerCase()) &&
-                  entry.date === dateFilter,
+                  entry.date === dateFilter
               ).length === 0 ? (
                 <NotFoundMessage itemType="exercises" />
               ) : (
@@ -369,7 +388,7 @@ function ExercisePage() {
                       entry.name
                         .toLowerCase()
                         .includes(exerciseNameFilter.toLowerCase()) &&
-                      entry.date === dateFilter,
+                      entry.date === dateFilter
                   )
                   .map((entry) => (
                     <div
@@ -381,8 +400,14 @@ function ExercisePage() {
                         <h4 className="mt-2 ml-2">
                           {`Exercise Name: ${entry.name}`}
                         </h4>
-                        <p className="mt-2 ml-2"> {`Duration: ${entry.duration} mins`}</p>
-                        <p className="mt-2 ml-2"> {`Calories Burned: ${entry.calories} kcal`}</p>
+                        <p className="mt-2 ml-2">
+                          {" "}
+                          {`Duration: ${entry.duration} mins`}
+                        </p>
+                        <p className="mt-2 ml-2">
+                          {" "}
+                          {`Calories Burned: ${entry.calories} kcal`}
+                        </p>
 
                         <button
                           onClick={() => deleteExercise(entry.id)}

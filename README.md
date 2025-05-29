@@ -26,7 +26,6 @@ The app also introduces a **meal creation** section, where users can build and t
 ## 🛠️ How to Use
 
 1. **Sign Up and Log In**: Users can register with a secure password, then input their weight, height, and fitness goals to get started.
-   
 2. **Track Exercise and Calories Burned**: The exercise tab allows users to log workouts and track calories burned based on time and activity type.
 
 3. **Log Meals and Calories Gained**: Users can input their meals and see how many calories they've gained based on the food type and quantity (Note: currently, calorie data may not be available due to the API transition).
@@ -41,7 +40,7 @@ The app also introduces a **meal creation** section, where users can build and t
 
 ## 🏆 Achievements
 
-Building **AI Fitness** gave me the opportunity to further develop my **full-stack skills**. Working with **NextJS** and **TypeScript** allowed me to optimise the app for performance and scalability, while **Tailwind CSS** made designing an intuitive interface much faster and more efficient. 
+Building **AI Fitness** gave me the opportunity to further develop my **full-stack skills**. Working with **NextJS** and **TypeScript** allowed me to optimise the app for performance and scalability, while **Tailwind CSS** made designing an intuitive interface much faster and more efficient.
 
 The integration with **OpenAI's Assistant API** was a key learning point, as I worked on passing user-specific data (meals and workouts) to provide personalised advice. Additionally, the improvements in the UI and security (strong password requirements) made the app feel more polished and professional.
 

@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/app/lib/dbConnection";
 import { cookies } from "next/headers"; // If using outside of Next.js, this will differ
 import jwt from "jsonwebtoken";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   if (request.method !== "GET") {
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
         {
           status: 401,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -33,15 +33,12 @@ export async function GET(request: Request) {
     const userID = (decoded as any).userId;
 
     if (!userID) {
-      return new Response(
-        JSON.stringify({ error: "Invalid token" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
-console.log(userID);
+    console.log(userID);
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
     const collection = db.collection("foods");
@@ -76,7 +73,7 @@ console.log(userID);
 
     const totalCalories = recentMeals.reduce(
       (acc, meal) => acc + meal.calories,
-      0,
+      0
     );
 
     return new Response(JSON.stringify({ recentMeals, totalCalories }), {

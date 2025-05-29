@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         {
           status: 401,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   } catch (error: any) {
     return new Response(JSON.stringify({ error: "Failed to Logout" }), {

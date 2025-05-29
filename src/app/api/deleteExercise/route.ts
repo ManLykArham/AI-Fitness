@@ -45,10 +45,13 @@ export async function POST(request: Request): Promise<Response> {
     const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 1) {
-      return new Response(JSON.stringify({ message: "Exercise deleted successfully" }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ message: "Exercise deleted successfully" }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     } else {
       return new Response(JSON.stringify({ error: "Exercise not found" }), {
         status: 404,
@@ -56,10 +59,19 @@ export async function POST(request: Request): Promise<Response> {
       });
     }
   } catch (error: any) {
-    console.error("Failed to connect to the database or delete the document", error);
-    return new Response(JSON.stringify({ error: "Internal server error", details: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error(
+      "Failed to connect to the database or delete the document",
+      error
+    );
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        details: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

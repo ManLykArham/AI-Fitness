@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         {
           status: 401,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -31,13 +31,10 @@ export async function GET(request: Request) {
     const userID = (decoded as any).userId;
 
     if (!userID) {
-      return new Response(
-        JSON.stringify({ error: "Invalid token" }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const client = await connectToDatabase();

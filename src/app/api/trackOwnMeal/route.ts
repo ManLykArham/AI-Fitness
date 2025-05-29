@@ -11,33 +11,27 @@ export async function POST(req: Request) {
     });
   }
   const { mealData } = await req.json();
-// Extract the token from the cookies
-const cookie = cookies().get("token");
-const token = cookie ? cookie.value : null;
+  // Extract the token from the cookies
+  const cookie = cookies().get("token");
+  const token = cookie ? cookie.value : null;
 
-if (!token) {
-  return new Response(
-    JSON.stringify({ error: "Authentication required" }),
-    {
+  if (!token) {
+    return new Response(JSON.stringify({ error: "Authentication required" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
-    },
-  );
-}
+    });
+  }
 
-// Verify and decode the JWT token
-const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-const userID = (decoded as any).userId;
+  // Verify and decode the JWT token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+  const userID = (decoded as any).userId;
 
-if (!userID) {
-  return new Response(
-    JSON.stringify({ error: "Invalid token" }),
-    {
+  if (!userID) {
+    return new Response(JSON.stringify({ error: "Invalid token" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
-    },
-  );
-}
+    });
+  }
 
   // let userId;
   // try {
@@ -56,14 +50,14 @@ if (!userID) {
     const client = await connectToDatabase();
     const db = client.db("aifitnessdb");
     const collection = db.collection("foods");
-    
-  console.log("MealData: " + mealData);
+
+    console.log("MealData: " + mealData);
 
     const mealDoc = {
       userID,
       ...mealData,
       timestamp: new Date(),
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
     };
 
     const insertionResult = await collection.insertOne(mealDoc);
@@ -76,7 +70,7 @@ if (!userID) {
           message: "Meal logged successfully",
           data: mealDoc,
           mealId: insertionResult.insertedId,
-        }),
+        })
       );
     } else {
       throw new Error("Failed to insert meal");

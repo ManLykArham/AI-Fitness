@@ -6,7 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AI Fitness",
-  description: "AI Fitness is a nutrition tracking web app with a personalised AI chatbot that helps users log meals, track nutrients, and manage their diet efficiently.",
+  description:
+    "AI Fitness is a nutrition tracking web app with a personalised AI chatbot that helps users log meals, track nutrients, and manage their diet efficiently.",
 };
 
 export default function RootLayout({

@@ -58,7 +58,7 @@ const MealPage: React.FC = () => {
     "Every Ingredient Matters!",
     "Build Your Bowl, Boost Your Soul!",
     "Your Meal, Your Masterpiece!",
-    "Chef’s Choice: Health & Flavor!"
+    "Chef’s Choice: Health & Flavor!",
   ];
 
   const setRandomMealMessage = () => {
@@ -188,7 +188,7 @@ const MealPage: React.FC = () => {
         if (Array.isArray(data)) {
           const mappedMeals = data
             .sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
             )
             .map((item) => ({
               id: item.id,
@@ -262,8 +262,8 @@ const MealPage: React.FC = () => {
   const toggleMealDetails = (id: any): void => {
     setMeals(
       meals.map((meal) =>
-        meal.id === id ? { ...meal, showDetails: !meal.showDetails } : meal,
-      ),
+        meal.id === id ? { ...meal, showDetails: !meal.showDetails } : meal
+      )
     );
   };
 
@@ -291,9 +291,10 @@ const MealPage: React.FC = () => {
     }
   };
 
-  const filteredMeals = meals.filter((meal) =>
-    meal.name.toLowerCase().includes(mealNameFilter.toLowerCase()) &&
-    meal.date.includes(dateFilter)
+  const filteredMeals = meals.filter(
+    (meal) =>
+      meal.name.toLowerCase().includes(mealNameFilter.toLowerCase()) &&
+      meal.date.includes(dateFilter)
   );
 
   return (
@@ -305,10 +306,16 @@ const MealPage: React.FC = () => {
               <div className="mt-3">
                 <div className="mt-2 px-7 py-3">
                   <p className="text-sm text-gray-500">
-                    {loadingMessage && <p className="text-green-500 text-center font-bold text-lg">{loadingMessage}</p>}
+                    {loadingMessage && (
+                      <p className="text-green-500 text-center font-bold text-lg">
+                        {loadingMessage}
+                      </p>
+                    )}
                   </p>
                   <p className="text-sm text-gray-500">
-                    <p className="text-black text-center text-sm mt-3">One moment please...</p>
+                    <p className="text-black text-center text-sm mt-3">
+                      One moment please...
+                    </p>
                   </p>
                 </div>
               </div>
@@ -447,7 +454,9 @@ const MealPage: React.FC = () => {
                   <div className="mt-3">
                     <div className="mt-2 px-7 py-3">
                       <p className="text-sm text-gray-500">
-                        {errorMessage && <p className="text-red-500 text-lg">{errorMessage}</p>}
+                        {errorMessage && (
+                          <p className="text-red-500 text-lg">{errorMessage}</p>
+                        )}
                       </p>
                     </div>
                     <div className="items-center px-4 py-3">
@@ -497,7 +506,9 @@ const MealPage: React.FC = () => {
                   >
                     <h1 className="font-bold">Name: {meal.name}</h1>
                     <h1 className="font-bold">Type: {meal.mealType}</h1>
-                    <h1 className="font-bold">Calories: {meal.calories} kcal</h1>
+                    <h1 className="font-bold">
+                      Calories: {meal.calories} kcal
+                    </h1>
 
                     {meal.showDetails && (
                       <div className="m-3">
@@ -511,7 +522,9 @@ const MealPage: React.FC = () => {
                         )}
                         {meal.proteinG && <p>Protein: {meal.proteinG}g</p>}
                         {meal.sodiumMg && <p>Sodium: {meal.sodiumMg}mg</p>}
-                        {meal.potassiumMg && <p>Potassium: {meal.potassiumMg}mg</p>}
+                        {meal.potassiumMg && (
+                          <p>Potassium: {meal.potassiumMg}mg</p>
+                        )}
                         {meal.cholesterolMg && (
                           <p>Cholesterol: {meal.cholesterolMg}mg</p>
                         )}
