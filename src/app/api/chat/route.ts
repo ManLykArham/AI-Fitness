@@ -50,14 +50,14 @@ export async function POST(request: Request) {
       });
     }
 
-    // 🧵 2. Create or reuse thread
+    
     let assistantThreadID = threadID;
     if (!userHasSentMessage || !threadID) {
       const newThread = await openaiassistant.beta.threads.create();
       assistantThreadID = newThread.id;
     }
 
-    // 🧾 3. Send user's message to OpenAI
+    
     await openaiassistant.beta.threads.messages.create(assistantThreadID, {
       role: "user",
       content: userChatbotMessage,
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
       .content[0] as TextContentBlock;
     const chatbotResponse = assistantMessage.text.value;
 
-    // 🗂 4. Save both user and AI messages
+    
     const previousData = await getChatHistory(userID);
     const previousMessages = previousData?.messages || [];
 
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
     await saveChatMessages(userID, newMessages, assistantThreadID);
 
-    // ✅ 5. Return response + threadID
+   
     return new Response(
       JSON.stringify({ chatbotResponse, assistantThreadID }),
       {
